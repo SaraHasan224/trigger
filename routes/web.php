@@ -46,13 +46,10 @@ Route::group(['prefix' => 'admin-dashboard', 'middleware' => ['auth', 'adminAuth
 		Route::post( '/my-profile', 'Admin\Administrator\Users@update_profile' )->name( "update-profile-admin" );
 		Route::get( '/change-password', 'Admin\Administrator\Users@change_password' )->name( "change-password-admin" );
 		Route::post( '/change-password', 'Admin\Administrator\Users@update_password' )->name( "update-password-admin" );
-
 		    //  Personal Profile
         Route::post( '/update-cc-info', 'Admin\Administrator\Users@change_cc_info' )->name( "update-cc-info" );
         Route::post( '/update-dc-info', 'Admin\Administrator\Users@change_dc_info' )->name( "update-dc-info" );
         Route::post( '/update-bank-info', 'Admin\Administrator\Users@change_bank_info' )->name( "update-bank-info" );
-
-
 		//Users Roles
 		Route::group( [ 'prefix' => 'roles' ], function () {
 			Route::get( '/', 'Admin\Administrator\Roles@index' )->name( "role-list" );
@@ -74,17 +71,23 @@ Route::group(['prefix' => 'admin-dashboard', 'middleware' => ['auth', 'adminAuth
 			Route::get( '/edit/{id}', 'Admin\Administrator\Users@edit' )->where( [ 'id' => '[0-9]+' ] )->name( "user-edit" );
 			Route::post( '/edit/{id}', 'Admin\Administrator\Users@update' )->where( [ 'id' => '[0-9]+' ] )->name( "user-update" );
 		});
-        //Records
-        Route::group( [ 'prefix' => 'records' ], function () {
 
-            Route::get( '/', 'Admin\Administrator\Records@index' )->name( "record-list" );
-            Route::post( '/', 'Admin\Administrator\Records@data_list' )->name( "record-get-list" );
-            Route::delete( '/', 'Admin\Administrator\Records@delete' )->name( "record-delete" );
-            Route::get('import', 'Admin\Administrator\Records@importExportView')->name('imp-view');
-            Route::post('import', 'Admin\Administrator\Records@import')->name('import1');
-            Route::get('download_eg', 'Admin\Administrator\Records@download_eg')->name('download-eg');
-        });
 	});
+    //Records
+    Route::group( [ 'prefix' => 'records' ], function () {
+
+        Route::get( '/', 'Admin\Administrator\Records@index' )->name( "record-list" );
+        Route::post( '/', 'Admin\Administrator\Records@data_list' )->name( "record-get-list" );
+        Route::delete( '/', 'Admin\Administrator\Records@delete' )->name( "record-delete" );
+        Route::get('import', 'Admin\Administrator\Records@importExportView')->name('imp-view');
+        Route::post('import', 'Admin\Administrator\Records@import')->name('import1');
+        Route::get('download_eg', 'Admin\Administrator\Records@download_eg')->name('download-eg');
+
+        Route::get( '/edit/{id}', 'Admin\Administrator\Records@edit' )->where( [ 'id' => '[0-9]+' ] )->name( "record-edit" );
+        Route::post( '/edit/{id}', 'Admin\Administrator\Records@update' )->where( [ 'id' => '[0-9]+' ] )->name( "record-update" );
+        Route::delete( '/', 'Admin\Administrator\Records@delete' )->name( "record-delete" );
+
+    });
     //Personal and Business Workbench
     Route::group( [ 'prefix' => 'workbench','middleware' => ['cors'] ], function () {
         Route::group( [ 'prefix' => 'personal' ], function () {

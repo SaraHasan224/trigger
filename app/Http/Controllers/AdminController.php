@@ -13,6 +13,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use Spatie\Permission\Models\Permission;
+
 class AdminController extends MasterController {
 
 	public $_Status;

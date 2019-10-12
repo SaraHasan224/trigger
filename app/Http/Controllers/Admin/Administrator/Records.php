@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Administrator;
 use App\Http\Controllers\AdminController;
 use App\Notification,
     App\Record;
+use App\User;
 use Auth;
 use App\UserRole;
 use Spatie\Permission\Models\Role;
@@ -48,9 +49,34 @@ class Records extends AdminController
         $length = ((int)Input::get("length") > 0 ? (int)Input::get("length") : 25);
 
         $columns = ["records.id", "records.id", "records.first_name","records.last_name", "records.email","records.current_street", "records.current_city", "records.current_state","records.phone_no","records.old_street", "records.old_city", "records.old_state", 'records.dob',"records.current_emp","records.line_of_business","records.policy_number","records.claim_number","records.loss_date","records.created_at", "records.updated_at"];
-        $query = Record::selectRaw("records.id,records.first_name, records.last_name,records.email,records.current_street,records.current_city,records.current_state, records.phone_no,records.old_street,records.old_city,records.old_state,records.dob,records.current_emp,records.policy_number,records.line_of_business,records.claim_number,records.loss_date,records.created_at, records.updated_at, a_added.name as AddedBy, a_updated.name as ModifiedBy")
-            ->leftJoin('users as a_added', 'records.AddedBy', '=', 'a_added.id')
-            ->leftJoin('users as a_updated', 'records.ModifiedBy', '=', 'a_updated.id');
+        $query = Record::selectRaw(
+                        "records.id,
+                        records.first_name, 
+                        records.last_name,
+                        records.email,
+                        records.current_street,
+                        records.current_city,
+                        records.current_state, 
+                        records.phone_no,
+                        records.old_street,
+                        records.old_city,
+                        records.old_state,
+                        records.dob,
+                        records.current_emp,
+                        records.policy_number,
+                        records.line_of_business,
+                        records.claim_number,
+                        records.loss_date,
+                        records.created_at, 
+                        records.updated_at, 
+                        a_added.name as AddedBy, 
+                        a_updated.name as ModifiedBy");
+            if(Auth::user()->user_type == 2)
+            {
+               $query->where('records.AddedBy',Auth::user()->id);
+            }
+                $query->leftJoin('users as a_added', 'records.AddedBy', '=', 'a_added.id')
+                    ->leftJoin('users as a_updated', 'records.ModifiedBy', '=', 'a_updated.id');
 
         $recordsTotal = count($query->get());
 
@@ -64,10 +90,14 @@ class Records extends AdminController
         $recordsFiltered = count($query->get());
         $result = $query->skip($start)->take($length)->get();
         $data = [];
-        foreach ($result as $Rs) {
+        foreach ($result as $key => $Rs) {
+            $url = route('record-edit',['id' => $Rs->id]);
+            $button_link = "location.href='".$url."'";
+            $button = '<div class="btn-group"><button type="button" onclick="'.$button_link.'" class="btn btn-outline-primary btn-rounded btn-sm">Edit</button></div>';
+
             $data[] = [
-//                '<input type="checkbox" name="ids[]" id="checkbox' . $Rs->id . '" value="' . $Rs->id . '" class="checkboxes">',
-                $Rs->id,
+                '<input type="checkbox" name="ids[]" id="checkbox' . $Rs->id . '" value="' . $Rs->id . '" class="checkboxes">',
+                $key+1,
                 unescape($Rs->first_name),
                 unescape($Rs->last_name),
                 unescape($Rs->email),
@@ -89,12 +119,8 @@ class Records extends AdminController
                 unescape($Rs->claim_desc),
                 '<b>'.$Rs->AddedBy.'</b><br />'.$Rs->created_at,
                 '<b>'.(!empty($Rs->ModifiedBy) ? $Rs->ModifiedBy : '--').'</b><br />'.$Rs->updated_at,
-//                '<div class="btn-group">
-//<button type="button" onclick="location.href=\'' . route('user-edit', ["id" => $Rs->id]) . '\'" class="btn btn-outline-primary btn-rounded btn-sm"'.($Rs->user_type == 1 ? ' disabled="disabled"' : '').'>Edit</button>
-//
-//
-//m
-//<button type="button" class="btn btn-outline-' . ($Rs->Status == 0 ? 'success' : 'danger') . ' btn-rounded btn-sm btn-status" id="' . $Rs->id . '" Status="' . $Rs->Status . '" '.($Rs->Status == 0 ? 'data-original-title="Click to Activate"' : 'data-original-title="Click to deactivate"').' data-placement="right"'.($Rs->user_type == 1 ? ' disabled="disabled"' : '').'><i class="fa ' . ($Rs->Status == 1 ? 'fa-eye-slash' : 'fa-eye') . '"></i></button></div>'
+                $button
+                    //'<button type="button" class="btn btn-outline-' . ($Rs->Status == 0 ? 'success' : 'danger') . ' btn-rounded btn-sm btn-status" id="' . $Rs->id . '" Status="' . $Rs->Status . '" '.($Rs->Status == 0 ? 'data-original-title="Click to Activate"' : 'data-original-title="Click to deactivate"').' data-placement="right"'.($Rs->user_type == 1 ? ' disabled="disabled"' : '').'><i class="fa ' . ($Rs->Status == 1 ? 'fa-eye-slash' : 'fa-eye') . '"></i></button>'+
             ];
         }
 
@@ -174,5 +200,194 @@ class Records extends AdminController
             'mdi mdi-cloud-download'
         );
         return response()->download($file, 'Trigger-Sample-Import.xlsx', $headers);
+    }
+
+
+    public function edit($id) {
+        $this->check_access('Edit Record');
+        $this->data["Record"] = Record::find($id);
+        if(!empty($this->data["Record"])) {
+            if($this->data["Record"]->AddedBy == 1 && auth()->user()->user_type != 1) {
+                return redirect()->route("user-list")->with("warning_msg", "Records added by Super Admin are not allowed to be updated.");
+            } else if($this->data["Record"]->AddedBy != auth()->user()->id && auth()->user()->user_type != 1) {
+                return redirect()->route("user-list")->with("warning_msg", "You are not allowed to access records added by other user.");
+            }else {
+
+                return view('admin.administrator.records.edit', $this->data);
+            }
+        } else {
+            return redirect()->route("record-list")->withErrors("Invalid Record ID.");
+        }
+    }
+
+    public function update($id) {
+        $this->check_access('Edit User');
+        $rules["first_name"] = 'required|string|min:1|max:30';
+        $rules["last_name"] = 'required|string|min:1|max:30';
+        $rules["email"] = 'required|email';
+        $rules["phone_no"] = 'required|min:1|max:40';
+        $rules["current_street"] = 'max:40';
+        $rules["current_city"] = 'required|string|min:1|max:30';
+        $rules["current_state"] = 'required|string|min:1|max:30';
+        $rules["current_zip"] = 'max:20';
+        $rules["old_street"] = 'required|string|min:1|max:20';
+        $rules["old_city"] = 'required|string|min:1|max:30';
+        $rules["old_state"] = 'required|string|min:1|max:30';
+        $rules["old_zip"] = 'max:20';
+        $rules["dob"] = 'required|string|min:1|max:30';
+        $rules["current_emp"] = 'max:200';
+        $rules["policy_number"] = 'required|min:1|max:150';
+        $rules["line_of_business"] = 'max:100';
+        $rules["claim_number"] = 'required|min:1|max:150';
+        $rules["loss_date"] = 'required|min:1|max:150';
+        $rules["claim_desc"] = 'required|string|min:1|max:150';
+        $v = Validator::make(Input::all(), $rules, [
+            "first_name.required" => "First Name is required.",
+            "first_name.string" => "First Name field should be a string.",
+            "last_name.required" => "Last Name is required.",
+            "last_name.string" => "Last Name field should be a string.",
+            "email.required" => "Email field is required.",
+            "phone_no.required" => "Phone Number is required.",
+            "current_street.max" => "Current Street should not exceed 40 characters.",
+            "current_city.required" => "Current City field is required.",
+            "current_city.max" => "Current Street should not exceed 30 characters.",
+            "current_state.required" => "Current State field is required.",
+            "current_zip.max" => "Current ZIP Code field should not exceed 20 characters.",
+            "old_street.max" => "Old Street should not exceed 40 characters.",
+            "old_street.required" => "Old State field is required.",
+            "old_state.max" => "Old Street should not exceed 30 characters.",
+            "old_state.required" => "Old State field is required.",
+            "old_zip.max" => "Old ZIP Code field should not exceed 20 characters.",
+            "dob.max" => "Date of Birth field should not exceed 30 characters.",
+            "dob.required" => "Date of Birth field is required.",
+            "policy_number.required" => "Policy number field is required.",
+            "policy_number.max" => "Policy number field should not exceed 150 characters.",
+            "line_of_business.max" => "Line of Business field should not exceed 100 characters.",
+            "claim_number.required" => "Claim number field is required.",
+            "claim_number.max" => "Claim number field should not exceed 150 characters.",
+            "loss_date.required" => "Loss Date field is required.",
+            "loss_date.max" => "Loss Date field should not exceed 150 characters.",
+            "claim_desc.required" => "Claim description field is required.",
+            "claim_desc.max" => "Claim description field should not exceed 150 characters.",
+        ]);
+        $v->setAttributeNames([
+            'first_name' => "First Name",
+            'last_name' => "Last Name",
+            'email' => "Email Address",
+            'phone_no' => "Phone Number",
+            'current_street' => "Current Street",
+            'current_city' => "Current City",
+            'current_state' => "Current State",
+            'current_zip' => "Current ZIP Code",
+            'old_street' => "Old Street",
+            'old_state' => "Old State",
+            'old_zip' => "Old ZIP Code",
+            'dob' => "Date of Birth",
+            'current_emp' => "Current Employer",
+            'policy_number' => "Policy number",
+            'line_of_business' => "Line of Business",
+            'claim_number' => "Claim number",
+            'loss_date' => "Loss Date",
+            'claim_desc' => "Claim description",
+        ]);
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v->errors())->withInput();
+        } else {
+            $Record = Record::find($id);
+            if(!empty($Record)) {
+                if($Record->AddedBy == 1 && auth()->user()->user_type != 1) {
+                    return redirect()->route("user-list")->with("warning_msg", "Records added by Super Admin are not allowed to be updated.");
+                } else if($Record->AddedBy != auth()->user()->id && auth()->user()->user_type != 1) {
+                    return redirect()->route("user-list")->with("warning_msg", "You are not allowed to access records added by other user.");
+                }else {
+
+                    $Record->first_name = escape(Input::get('cc_name'));
+                    $Record->middle_name = escape(Input::get('middle_name'));
+                    $Record->last_name = escape(Input::get('last_name'));
+                    $Record->dob = escape(Input::get('dob'));
+                    $Record->current_street = escape(Input::get('current_street'));
+                    $Record->current_city = escape(Input::get('current_city'));
+                    $Record->current_state = escape(Input::get('current_state'));
+                    $Record->current_zip = escape(Input::get('current_zip'));
+                    $Record->old_street = escape(Input::get('old_street'));
+                    $Record->old_city = escape(Input::get('old_city'));
+                    $Record->old_state = escape(Input::get('old_state'));
+                    $Record->old_zip = escape(Input::get('old_zip'));
+                    $Record->email = escape(Input::get('email'));
+                    $Record->phone_no = escape(Input::get('phone_no'));
+                    $Record->current_emp = escape(Input::get('current_emp'));
+                    $Record->policy_number = escape(Input::get('policy_number'));
+                    $Record->line_of_business = escape(Input::get('line_of_business'));
+                    $Record->claim_number = escape(Input::get('claim_number'));
+                    $Record->loss_date = escape(Input::get('loss_date'));
+                    $Record->claim_desc = escape(Input::get('claim_desc'));
+                    $Record->ModifiedBy = auth()->user()->id;
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." updated user record, against User Name: ".$Record->name,
+                        'admin-dashboard/administrator/users/edit/'.$id,
+                        Auth::user()->id,
+                        ' bg-inverse-primary text-primary',
+                        'mdi mdi-account-multiple-plus'
+                    );
+                    return redirect()->route("record-list")->with('success', "Record has been updated successfully.");
+                }
+            } else {
+                return redirect()->route("record-list")->withErrors("Invalid Record ID.");
+            }
+        }
+    }
+
+
+    public function delete() {
+        $this->check_access('Delete Record', false);
+        $super_admin = User::whereIn('user_type',1)->get();
+        dd($super_admin);
+        $super_Admin = [];
+        foreach ($super_admin as $id)
+        {
+            $super_Admin = $id['id'];
+        }
+        if(in_array($super_Admin,Input::get('ids')) && (auth()->user()->user_type != 1))
+        {
+            return redirect('admin-dashboard/administrator/users')->with('warning_msg', "Data Record added by Super Admin can't be deleted.");
+        }
+        else{
+            if(is_array(Input::get('ids')) && count(Input::get('ids')) > 0) {
+                try {
+                    /*
+                     Old Notifcation
+                        Notification::create([
+                            'from_id' => Auth::user()->id,
+                            'message' => Auth::user()->name.' deleted users '
+                        ]);
+                    */
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." deleted user record",
+                        'admin-dashboard/administrator/users',
+                        Auth::user()->id,
+                        '  bg-inverse-warning text-warning',
+                        'mdi mdi-security'
+                    );
+                    if(auth()->user()->user_type != 1)
+                    {
+                        dd('H');
+                        Record::where('AddedBy',auth()->user()->id)->whereIn('id', Input::get('ids'))->delete();
+                    }else{
+                        Record::whereIn('id', Input::get('ids'))->delete();
+                    }
+                    return redirect('admin-dashboard/administrator/users')->with('success', "Selected records have been delted successfully.");
+                } catch(\Illuminate\Database\QueryException $ex) {
+                    return redirect()->back()->with("warning_msg", "Some record(s) can not be deleted.");
+                }
+            } else {
+                return redirect('admin-dashboard/administrator/users')->with('warning_msg', "Please select records to delete.");
+            }
+        }
     }
 }

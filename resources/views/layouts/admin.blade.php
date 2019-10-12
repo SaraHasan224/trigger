@@ -95,6 +95,7 @@
 			type: "GET",
 			url: '{{route('recieve-notification')}}',
 			success: function (response) {
+				$('.dropdown-body').empty();
 				$('.dropdown-body').append(response);
 			}
 		});
@@ -116,6 +117,7 @@
 				'is_admin' : is_admin
 			},
 			success: function (response) {
+				$('.dropdown-body').empty();
 				$('.dropdown-body').append(response);
 			}
 		});
