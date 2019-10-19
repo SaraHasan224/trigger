@@ -16,9 +16,7 @@ class CreateWSchoolTable extends Migration
         Schema::create('w_school', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('workbench_id')->unsigned()->index('workbench_workbench_id_foreign');
-            $table->string('first_name',30)->nullable(false);
-            $table->string('middle_name',30)->nullable(false);
-            $table->string('last_name',30)->nullable(false);
+            $table->string('name',150)->nullable(false);
             $table->timestamps();
         });
     }

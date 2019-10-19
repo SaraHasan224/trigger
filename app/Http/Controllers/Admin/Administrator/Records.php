@@ -25,33 +25,112 @@ class Records extends AdminController
 
     public function index(){
         $this->check_access('List Records');
+        $Record = Record::selectRaw(
+            "records.id as id,
+            records.first_name as first_name, 
+            records.middle_name as middle_name, 
+            records.last_name as last_name,
+            records.email as email,
+            records.current_street as current_street,
+            records.current_city as current_city,
+            records.current_state as current_state, 
+            records.phone_no as phone_no,
+            records.old_street as old_street,
+            records.old_city as old_city,
+            records.old_state as old_state,
+            records.dob as dob,
+            records.current_emp as current_emp,
+            records.policy_number as policy_number,
+            records.line_of_business as line_of_business,
+            records.claim_number as claim_number,
+            records.loss_date as loss_date,
+            records.created_at as created_at, 
+            records.updated_at as updated_at, 
+            a_added.name as AddedBy, 
+            a_updated.name as ModifiedBy")
+        ->leftJoin('users as a_added', 'records.AddedBy', '=', 'a_added.id')
+        ->leftJoin('users as a_updated', 'records.ModifiedBy', '=', 'a_updated.id')
+        ->get();
+        foreach ($Record as $key => $r)
+        {
+            $record['first_name'][$key] = $r->first_name;
+            $record['middle_name'][$key] = $r->middle_name;
+            $record['last_name'][$key] = $r->last_name;
+            $record['email'][$key] = $r->email;
+            $record['current_street'][$key] = $r->current_street;
+            $record['current_city'][$key] = $r->current_city;
+            $record['current_state'][$key] = $r->current_state;
+            $record['current_zip'][$key] = $r->current_zip;
+            $record['phone_no'][$key] = $r->phone_no;
+            $record['old_street'][$key] = $r->old_street;
+            $record['old_city'][$key] = $r->old_city;
+            $record['old_state'][$key] = $r->old_state;
+            $record['old_zip'][$key] = $r->old_zip;
+            $record['dob'][$key] = $r->dob;
+            $record['current_emp'][$key] = $r->current_emp;
+            $record['policy_number'][$key] = $r->policy_number;
+            $record['line_of_business'][$key] = $r->line_of_business;
+            $record['claim_number'][$key] = $r->claim_number;
+            $record['loss_date'][$key] = $r->loss_date;
+            $record['claim_desc'][$key] = $r->claim_desc;
+            $record['AddedBy'][$key] = $r->AddedBy;
+            $record['ModifiedBy'][$key] = $r->ModifiedBy;
+        }
+        $records = [];
+        $records['first_name'] = array_unique($record['first_name']);
+        $records['middle_name'] = array_unique($record['middle_name']);
+        $records['last_name'] = array_unique($record['last_name']);
+        $records['email'] = array_unique($record['email']);
+        $records['current_street'] = array_unique($record['current_street']);
+        $records['current_city'] = array_unique($record['current_city']);
+        $records['current_state'] = array_unique($record['current_state']);
+        $records['current_zip'] = array_unique($record['current_zip']);
+        $records['phone_no'] = array_unique($record['phone_no']);
+        $records['old_street'] = array_unique($record['old_street']);
+        $records['old_city'] = array_unique($record['old_city']);
+        $records['old_state'] = array_unique($record['old_state']);
+        $records['old_zip'] = array_unique($record['old_zip']);
+        $records['dob'] = array_unique($record['dob']);
+        $records['current_emp'] = array_unique($record['current_emp']);
+        $records['policy_number'] = array_unique($record['policy_number']);
+        $records['line_of_business'] = array_unique($record['line_of_business']);
+        $records['loss_date'] = array_unique($record['loss_date']);
+        $records['claim_number'] = array_unique($record['claim_number']);
+        $records['claim_desc'] = array_unique($record['claim_desc']);
+        $records['AddedBy'] = array_unique($record['AddedBy']);
+        $records['ModifiedBy'] = array_unique($record['ModifiedBy']);
+        $this->data['Record'] = $records;
         return view("admin.administrator.records.list",$this->data);
     }
 
 
-    public function data_list() {
+    public function data_list(Request $request) {
         header("Content-type: application/json; charset=utf-8");
         if(!$this->check_access('List Records', true)) {
             echo json_encode(["draw" => (int)Input::get("draw"), "recordsTotal" => 0, "recordsFiltered" => 0, "data" => [], "error" => "Access denied!"]);
             exit(0);
         }
-        // Firebase Notification sent
-        Notification::Notify(
-            auth()->user()->user_type,
-            $this->to_id,
-            "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." visited records list",
-            'admin-dashboard/administrator/records/',
-            Auth::user()->id,
-                    '  bg-inverse-secondary text-info',
-                    'mdi mdi-eye'
-        );
         $start = (int)Input::get("start");
         $length = ((int)Input::get("length") > 0 ? (int)Input::get("length") : 25);
-
+        $obj = $request->object;
+        if($obj == [])
+        {
+            // Firebase Notification sent
+            Notification::Notify(
+                auth()->user()->user_type,
+                $this->to_id,
+                "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." visited records list",
+                'admin-dashboard/administrator/records/',
+                Auth::user()->id,
+                '  bg-inverse-secondary text-info',
+                'mdi mdi-eye'
+            );
+        }
         $columns = ["records.id", "records.id", "records.first_name","records.last_name", "records.email","records.current_street", "records.current_city", "records.current_state","records.phone_no","records.old_street", "records.old_city", "records.old_state", 'records.dob',"records.current_emp","records.line_of_business","records.policy_number","records.claim_number","records.loss_date","records.created_at", "records.updated_at"];
         $query = Record::selectRaw(
                         "records.id,
                         records.first_name, 
+                        records.middle_name, 
                         records.last_name,
                         records.email,
                         records.current_street,
@@ -61,20 +140,317 @@ class Records extends AdminController
                         records.old_street,
                         records.old_city,
                         records.old_state,
+                        records.old_zip,
                         records.dob,
                         records.current_emp,
                         records.policy_number,
                         records.line_of_business,
                         records.claim_number,
+                        records.claim_number,
                         records.loss_date,
+                        records.claim_desc,
                         records.created_at, 
-                        records.updated_at, 
-                        a_added.name as AddedBy, 
-                        a_updated.name as ModifiedBy");
-            if(Auth::user()->user_type == 2)
-            {
-               $query->where('records.AddedBy',Auth::user()->id);
-            }
+                        records.updated_at");
+                if($obj['first_name'] != null)
+                {
+                    $query->where('records.first_name',$obj['first_name']);
+
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched first name field in a record list against keyword ".$obj['first_name'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['middle_name'] != null)
+                {
+                    $query->where('records.middle_name',$obj['middle_name']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched  middle name field in a record list against keyword: ".$obj['middle_name'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                };
+                if($obj['last_name'] != null)
+                {
+                    $query->where('records.last_name',$obj['last_name']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched last name field in a record list against keyword: ".$obj['last_name'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['email'] != null)
+                {
+                    $query->where('records.email',$obj['email']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched email field in a record list against keyword: ".$obj['email'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['current_street'] != null)
+                {
+                    $query->where('records.current_street',$obj['current_street']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched current street field in a record list against keyword: ".$obj['current_street'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['current_city'] != null)
+                {
+                    $query->where('records.current_city',$obj['current_city']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched current city field in a record list against keyword: ".$obj['current_city'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['current_state'] != null)
+                {
+                    $query->where('records.current_state',$obj['current_state']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched current state field in a record list against keyword: ".$obj['current_state'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['current_zip'] != null)
+                {
+                    $query->where('records.current_zip',$obj['current_zip']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched current zip field in a record list against keyword: ".$obj['current_zip'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                };
+                if($obj['phone_no'] != null)
+                {
+                    $query->where('records.phone_no',$obj['phone_no']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched phone number field in a record list against keyword: ".$obj['phone_no'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['old_street'] != null)
+                {
+                    $query->where('records.old_street',$obj['old_street']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched old street field in a record list against keyword: ".$obj['old_street'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['old_city'] != null)
+                {
+                    $query->where('records.old_city',$obj['old_city']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched old city field in a record list against keyword: ".$obj['old_city'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['old_state'] != null)
+                {
+                    $query->where('records.old_state',$obj['old_state']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched old state field in a record list against keyword: ".$obj['old_state'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['old_zip'] != null)
+                {
+                    $query->where('records.old_zip',$obj['old_zip']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched old zip field in a record list against keyword: ".$obj['old_zip'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['dob']  != null)
+                {
+                    $query->where('records.dob',$obj['dob']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched date of birth field in a record list against keyword: ".$obj['dob'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                };
+                if($obj['current_emp'] != null)
+                {
+                    $query->where('records.current_emp',$obj['current_emp']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched current employer field in a record list against keyword: ".$obj['current_emp'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['policy_number'] != null)
+                {
+                    $query->where('records.policy_number',$obj['policy_number']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched policy number field in a record list against keyword:  ".$obj['policy_number'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                };
+                if($obj['line_of_business'] != null)
+                {
+                    $query->where('records.line_of_business',$obj['line_of_business']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched line of business field in a record list against keyword: ".$obj['line_of_business'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['claim_number'] != null)
+                {
+                    $query->where('records.claim_number',$obj['claim_number']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched claim number field in a record list against keyword: ".$obj['claim_number'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['loss_date'] != null)
+                {
+                    $query->where('records.loss_date',$obj['loss_date']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched loss date field in a record list against keyword: ".$obj['loss_date'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['claim_desc'] != null)
+                {
+                    $query->where('records.claim_desc',$obj['claim_desc']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." searched claim description field in a record list against keyword: ".$obj['claim_desc'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+                if($obj['current_emp'] != null)
+                {
+                    $query->where('records.current_emp',$obj['current_emp']);
+                    // Firebase Notification sent
+                    Notification::Notify(
+                        auth()->user()->user_type,
+                        $this->to_id,
+                        "User: ".Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"."  current employment field in a record list against keyword: ".$obj['current_emp'],
+                        'admin-dashboard/administrator/records/',
+                        Auth::user()->id,
+                        '  bg-inverse-secondary text-info',
+                        'mdi mdi-eye'
+                    );
+                }
+
+                if(Auth::user()->user_type == 2)
+                {
+                   $query->where('records.AddedBy',Auth::user()->id);
+                }
                 $query->leftJoin('users as a_added', 'records.AddedBy', '=', 'a_added.id')
                     ->leftJoin('users as a_updated', 'records.ModifiedBy', '=', 'a_updated.id');
 
@@ -99,6 +475,7 @@ class Records extends AdminController
                 '<input type="checkbox" name="ids[]" id="checkbox' . $Rs->id . '" value="' . $Rs->id . '" class="checkboxes">',
                 $key+1,
                 unescape($Rs->first_name),
+                unescape($Rs->middle_name),
                 unescape($Rs->last_name),
                 unescape($Rs->email),
                 unescape($Rs->current_street),
@@ -342,9 +719,9 @@ class Records extends AdminController
 
 
     public function delete() {
-        $this->check_access('Delete Record', false);
-        $super_admin = User::whereIn('user_type',1)->get();
-        dd($super_admin);
+        $this->check_access('Delete Record');
+
+        $super_admin = User::where('user_type',1)->get();
         $super_Admin = [];
         foreach ($super_admin as $id)
         {
@@ -352,41 +729,40 @@ class Records extends AdminController
         }
         if(in_array($super_Admin,Input::get('ids')) && (auth()->user()->user_type != 1))
         {
-            return redirect('admin-dashboard/administrator/users')->with('warning_msg', "Data Record added by Super Admin can't be deleted.");
+            return redirect('admin-dashboard/record')->with('warning_msg', "Data Record added by Super Admin can't be deleted.");
         }
         else{
             if(is_array(Input::get('ids')) && count(Input::get('ids')) > 0) {
                 try {
                     /*
-                     Old Notifcation
-                        Notification::create([
-                            'from_id' => Auth::user()->id,
-                            'message' => Auth::user()->name.' deleted users '
-                        ]);
+                        Old Notifcation
+                            Notification::create([
+                                'from_id' => Auth::user()->id,
+                                'message' => Auth::user()->name.' deleted users '
+                            ]);
                     */
                     // Firebase Notification sent
                     Notification::Notify(
                         auth()->user()->user_type,
                         $this->to_id,
                         Auth::user()->name." ( Having Role: ".Auth::user()->role->name.")"." deleted user record",
-                        'admin-dashboard/administrator/users',
+                        'admin-dashboard/records',
                         Auth::user()->id,
                         '  bg-inverse-warning text-warning',
                         'mdi mdi-security'
                     );
                     if(auth()->user()->user_type != 1)
                     {
-                        dd('H');
                         Record::where('AddedBy',auth()->user()->id)->whereIn('id', Input::get('ids'))->delete();
                     }else{
                         Record::whereIn('id', Input::get('ids'))->delete();
                     }
-                    return redirect('admin-dashboard/administrator/users')->with('success', "Selected records have been delted successfully.");
+                    return redirect('admin-dashboard/record')->with('success', "Selected records have been delted successfully.");
                 } catch(\Illuminate\Database\QueryException $ex) {
                     return redirect()->back()->with("warning_msg", "Some record(s) can not be deleted.");
                 }
             } else {
-                return redirect('admin-dashboard/administrator/users')->with('warning_msg', "Please select records to delete.");
+                return redirect('admin-dashboard/administrator/record')->with('warning_msg', "Please select records to delete.");
             }
         }
     }

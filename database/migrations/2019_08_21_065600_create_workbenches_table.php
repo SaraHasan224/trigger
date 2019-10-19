@@ -19,7 +19,15 @@ class CreateWorkbenchesTable extends Migration
             $table->string('middle_name',30)->nullable(true);
             $table->string('last_name',30)->nullable(false);
             $table->string('dob',30)->nullable(true);
-            $table->text('scomment')->nullable(true);
+            $table->string('email',150)->nullable(false);
+            $table->string('street',199)->nullable(true);
+            $table->string('city',30)->nullable(true);
+            $table->string('state',30)->nullable(true);
+            $table->string('country',30)->nullable('US');
+            $table->string('zip',30)->nullable(true);
+            $table->string('current_emp',200)->nullable(true);
+            $table->string('job_title',150)->nullable(true);
+            $table->text('comment')->nullable(true);
             $table->timestamps();
         });
     }

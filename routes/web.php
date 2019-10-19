@@ -93,7 +93,7 @@ Route::group(['prefix' => 'admin-dashboard', 'middleware' => ['auth', 'adminAuth
         Route::group( [ 'prefix' => 'personal' ], function () {
             Route::get( '/', 'Admin\Administrator\Workbench@personal' )->name( "personal-form" );
             Route::post( '/save', 'Admin\Administrator\Workbench@personalSave' )->name( "personal-save" );
-            Route::get( '/result', 'Admin\Administrator\Workbench@personalResult' )->name( "personal-result" );
+            Route::get( '/result/{workbench_id}', 'Admin\Administrator\Workbench@personalResult' )->name( "personal-result" );
         });
         Route::group( [ 'prefix' => 'business' ], function () {
             Route::get( '/', 'Admin\Administrator\Workbench@business' )->name("business-form");

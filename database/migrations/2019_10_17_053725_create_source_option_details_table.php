@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWEmailsTable extends Migration
+class CreateSourceOptionDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateWEmailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('w_emails', function (Blueprint $table) {
+        Schema::create('source_option_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('workbench_id')->unsigned()->index('workbench_workbench_id_foreign');
-            $table->string('email',150)->nullable(true);
+            $table->integer('source_options_id')->unsigned()->index('workbench_source_options_id_foreign');
+            $table->string('type');
+            $table->json('response');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateWEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('w_emails');
+        Schema::dropIfExists('source_option_details');
     }
 }

@@ -5,6 +5,7 @@ var DatatablesBasic = {
             "scrollX": true,
 			processing: true,
 			serverSide: true,
+			searching: (Globals.dtSearching == false ? Globals.dtSearching : true),
 			dom: (Globals.dtDom ? Globals.dtDom : ''),
             buttons: (Globals.dtButtons ? Globals.dtButtons : null),
 			ajax: {

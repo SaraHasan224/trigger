@@ -18385,14 +18385,14 @@ table.info-table tr th.actions {
 }
 
 .email-aside-list .email-list-item .email-list-item-inner .workbench-detail2 {
-    grid-row-start: 1;
-    grid-column-start: 3;
+    grid-row-start: 2;
+    grid-column-start: 2;
     grid-column-end: span 2;
     grid-row-end: 3;
     text-align: left;
     color: #101010;
     font-family: "Roboto", sans-serif;
-    font-weight: 500;
+    font-weight: 300;
     font-size: 14px;
     margin: 2px 0px;
     max-width: 100%;

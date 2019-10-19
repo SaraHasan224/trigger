@@ -123,7 +123,7 @@
                                                                         data-toggle="modal"
                                                                         data-target="#WorkbenchModel"> Modal
                                                                 </button>
-                                                                <button type="button"  onClick="location.href='{{ route('personal-result') }}'"
+                                                                <button type="button"  onClick="location.href='{{ route('personal-result',5) }}'"
                                                                         class="btn btn-danger btn-lg has-icon">Result
                                                                 </button>
                                                             </div>
@@ -160,6 +160,7 @@
                                                                         </div>
                                                                     </div>
                                                                 <!-- {{--Alias--}} -->
+                                                                <!--
                                                                     <div class="row">
                                                                         <div class="col-md-2">
                                                                             <label> Alias: </label>
@@ -185,6 +186,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="alias_addmore"></div>
+                                                                -->
                                                                 <!-- {{--Birth Date--}} -->
                                                                     <div class="row">
                                                                         <div class="col-md-2">
@@ -210,13 +212,13 @@
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('p_email[]', old("p_email"),['placeholder' => 'Email Address','class' =>'form-control form-control-sm p_email', 'id' => 'p_email_0']) !!}
+                                                                                {!! Form::text('p_email', old("p_email"),['placeholder' => 'Email Address','class' =>'form-control form-control-sm p_email', 'id' => 'p_email_0']) !!}
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-1">
-                                                                            <a href="javascript:void(0)"
-                                                                            class="btn btn-primary btn-sm add_email_button add_button"><i class="fa fa-plus-square"></i></a>
-                                                                        </div>
+                                                                        {{--<div class="col-md-1">--}}
+                                                                            {{--<a href="javascript:void(0)"--}}
+                                                                            {{--class="btn btn-primary btn-sm add_email_button add_button"><i class="fa fa-plus-square"></i></a>--}}
+                                                                        {{--</div>--}}
                                                                     </div>
                                                                     <div class="email_addmore email_div"></div>
                                                                 <!-- {{--Social--}} -->
@@ -227,17 +229,17 @@
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('username[]', old("username"),['placeholder' => 'Username','class' => 'form-control form-control-sm']) !!}
+                                                                                {!! Form::text('social[username][]', old("username"),['placeholder' => 'Username','class' => 'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('social_url[]', old("social_url"),['placeholder' => 'Site Link','class' => 'form-control form-control-sm']) !!}
+                                                                                {!! Form::text('social[url][]', old("social_url"),['placeholder' => 'Site Link','class' => 'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::select('site[]', $social, old("site"),['class' => 'form-control form-control-sm']) !!}
+                                                                                {!! Form::select('social[site][]', $social, old("site"),['class' => 'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-1">
@@ -253,7 +255,7 @@
                                                                         </div>
                                                                         <div class="col-md-6" id="current_address">
                                                                             <div class="form-group mb-3">
-                                                                                {!! Form::text('current_address', old("current_address"), ['placeholder' => 'Street Address','class' => 'address form-control form-control-sm', 'id' => 'validationServer03 address']) !!}
+                                                                                {!! Form::text('street_address', old("street_address"), ['placeholder' => 'Street Address','class' => 'address form-control form-control-sm', 'id' => 'validationServer03 address']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-2">
@@ -269,17 +271,17 @@
                                                                         <div class="col-md-2"></div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('p_state', old("p_state"), ['placeholder' => 'State','class' => 'p_state form-control form-control-sm']) !!}
+                                                                                {!! Form::text('state', old("state"), ['placeholder' => 'State','class' => 'p_state form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('p_city', old("p_city"), ['placeholder' => 'City','class' => 'form-control form-control-sm', 'id' => 'city']) !!}
+                                                                                {!! Form::text('city', old("city"), ['placeholder' => 'City','class' => 'form-control form-control-sm', 'id' => 'city']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::number('p_zip', old("p_zip"), ['placeholder' => 'ZIP','class' => 'form-control form-control-sm p_zip', 'maxlength' => '10', 'id' => 'p_zip defaultconfig-3']) !!}
+                                                                                {!! Form::number('zip', old("zip"), ['placeholder' => 'ZIP','class' => 'form-control form-control-sm p_zip', 'maxlength' => '10', 'id' => 'p_zip defaultconfig-3']) !!}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -350,7 +352,7 @@
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('emp_cmp_name', old("emp_cmp_name"),['placeholder' => 'Company Name','class' => 'form-control form-control-sm']) !!}
+                                                                                {!! Form::text('employer_name', old("employer_name"),['placeholder' => 'Company Name','class' => 'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
@@ -358,11 +360,6 @@
                                                                                 {!! Form::text('job_title', old("job_title"),['placeholder' => 'Job Title','class' =>'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
-                                                                        <!--    <div class="col-md-1">
-                                                                                                    <a href="javascript:void(0)"
-                                                                                                    class="btn btn-primary btn-sm add_emp_button add_button"><i
-                                                                                                                class="fa fa-plus-square"></i></a>
-                                                                                                </div> -->
                                                                     </div>
                                                                     <div class="emp_addmore"></div>
                                                                 <!-- {{--Current Spouse--}} -->
@@ -373,22 +370,22 @@
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('sp_first_name[]', old("sp_first_name"),['placeholder' => 'First Name','class' =>'form-control form-control-sm defaultconfig-3', 'maxlength' => '30']) !!}
+                                                                                {!! Form::text('spouse[first_name][]', old("sp_first_name"),['placeholder' => 'First Name','class' =>'form-control form-control-sm defaultconfig-3', 'maxlength' => '30']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('sp_middle_name[]',old("sp_middle_name"), ['placeholder' => 'Middle Name','class' => 'form-control form-control-sm defaultconfig-3', 'maxlength' => '30']) !!}
+                                                                                {!! Form::text('spouse[middle_name][]',old("sp_middle_name"), ['placeholder' => 'Middle Name','class' => 'form-control form-control-sm defaultconfig-3', 'maxlength' => '30']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('sp_last_name[]', old("sp_last_name"),['placeholder' => 'Last Name','class' => 'form-control form-control-sm defaultconfig-3','maxlength' => '30']) !!}
+                                                                                {!! Form::text('spouse[last_name][]', old("sp_last_name"),['placeholder' => 'Last Name','class' => 'form-control form-control-sm defaultconfig-3','maxlength' => '30']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-2">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('sp_maiden_name[]',old("sp_maiden_name"), ['placeholder' => 'Maiden Name','class' => 'form-control form-control-sm defaultconfig-3', 'maxlength' => '30']) !!}
+                                                                                {!! Form::text('spouse[maiden_name][]',old("sp_maiden_name"), ['placeholder' => 'Maiden Name','class' => 'form-control form-control-sm defaultconfig-3', 'maxlength' => '30']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-1">
@@ -404,7 +401,7 @@
                                                                         </div>
                                                                         <div class="col-md-10">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('search', old("search"), ['placeholder'=> 'Enter any comments you want to save within search','class' => 'form-control form-control-sm', 'maxlength' => '30']) !!}
+                                                                                {!! Form::text('comments', old("comments"), ['placeholder'=> 'Enter any comments you want to save within search','class' => 'form-control form-control-sm', 'maxlength' => '30']) !!}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -413,327 +410,327 @@
                                                         </div>
                                                     </div>
                                                     <!-- Internal Command -->
-                                                    <div class="custom-head" style="display:none;" >
-                                                                <label>Internal Command </label>
+                                                    <div class="custom-head">
+                                                        <label>Internal Command </label>
                                                     </div>
-                                                    <div class="row" style="display:none;">
-                                                        <div class="grid-body" >
-                                                                <div class="item-wrapper" style="border:2px solid #e8e8e8; padding:20px;">
+
+                                                    <div class="grid-body" >
+                                                        <div class="item-wrapper" >
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    {{--Schema--}}
+                                                                    {{--<div class="row" style="display: none;">
+                                                                        <div class="col-md-2">
+                                                                            <label> <i class="fa fa-user"></i> Schema:</label>
+                                                                        </div>
+                                                                        <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                                {!! Form::select('schema', $schema, old("schema"), ['class' => 'form-control form-control-sm my-select', 'id' => 'SideID2']) !!}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>--}}
+                                                                    {{-- Source Options--}}
                                                                     <div class="row">
-                                                                        <div class="col-lg-12">
-                                                                            {{--Schema--}}
+                                                                        <div class="col-md-2">
+                                                                            <label style="font-weight: 900;">Source Options </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="grid-body">
+                                                                        <div class="item-wrapper">
                                                                             <div class="row">
-                                                                                <div class="col-md-2">
-                                                                                    <label> <i class="fa fa-user"></i> Schema:</label>
+                                                                                <div class="col-md-12">
+                                                                                    <label class="radio-label"
+                                                                                           style="font-style: italic;">Sources : <span>check / uncheck</span>
+                                                                                    </label>
                                                                                 </div>
-                                                                                <div class="col-md-3">
-                                                                                    <div class="form-group">
-                                                                                        {!! Form::select('schema', $schema, old("schema"), ['class' => 'form-control form-control-sm my-select', 'id' => 'SideID2']) !!}
+                                                                            </div>
+                                                                            {{-- Source Options Checkboxes--}}
+                                                                            <div class="grid-body" >
+                                                                                <div class="item-wrapper">
+                                                                                    <div class="row">
+                                                                                        @foreach($source_opt as $opt)
+                                                                                            <div class="col-lg-3">
+                                                                                                <div class="form-group">
+                                                                                                    <div class="checkbox">
+                                                                                                        <label>
+                                                                                                            <input type="checkbox" name="opt[{{ $opt->identifier_name }}]" value="{{$opt->name}}" class="form-check-input" {{$opt->default != null ? 'checked' : ''}}> {{$opt->name}} <i class="input-frame"></i>
+                                                                                                        </label>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        @endforeach
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            {{-- Source Options--}}
-                                                                            <div class="row">
-                                                                                <div class="col-md-2">
-                                                                                    <label style="font-weight: 900;">Source Options </label>
+                                                                            {{--
+                                                                            <div class="item-wrapper" style="margin-top: 20px; display: none;">
+                                                                                <div class="row">
+                                                                                    <div class="col-lg-12">
+                                                                                        <div class="form-group">
+                                                                                            <div class="form-inline">
+                                                                                                <div class="radio mb-3">
+                                                                                                    <label class="radio-label mr-4">
+                                                                                                        <input name="sample" type="radio" checked="">Perform Cached Search <i class="input-frame"></i>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                                <div class="radio mb-3">
+                                                                                                    <label class="radio-label">
+                                                                                                        <input name="sample" type="radio">Perform Fast Search <i class="input-frame"></i>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="grid-body" style="border:2px solid #e8e8e8;">
-                                                                                <div class="item-wrapper">
-                                                                                    <div class="row">
-                                                                                        <div class="col-md-12">
-                                                                                            <label class="radio-label"
-                                                                                                style="font-style: italic;">Sources : <span>check / uncheck</span>
+                                                                            <div class="item-wrapper" style=" display: none;">
+                                                                                <!-- Product -->
+                                                                                <div class="row">
+                                                                                    <div class="col-md-2">
+                                                                                        <label> Product: </label>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-group">
+                                                                                            {!! Form::select('product_type', $product_type, old("product_type"), ['class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <!-- Rate Set -->
+                                                                                <div class="row">
+                                                                                    <div class="col-md-2">
+                                                                                        <label> Rate Set: </label>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-group">
+                                                                                            {!! Form::select('rate_set', $rate_set, old("rate_set"), ['class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <!-- Risk Characterstic Company -->
+                                                                                <div class="row">
+                                                                                    <div class="col-md-2">
+                                                                                        <label> Risk Characterstic
+                                                                                            Company: </label>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-group">
+                                                                                            {!! Form::select('risk_char_comp',$risk_char_comp, old("risk_char_comp"),['class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="row">
+                                                                                    <div class="col-md-12">
+                                                                                        <label>Enter one or more URLs (each on new line) to bypass searches and process just the URL provided: </label>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="form-group">
+                                                                                            <textarea name="url_search" value="old('url_search')" class="form-control form-control-sm" id="inputType9" cols="12" rows="5"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-12">
+                                                                                        <label>Enter test content to bypass all searching and rate against just this content: </label>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="form-group">
+                                                                                            <textarea name="test_content" value="old('test_content')" class="form-control form-control-sm" id="inputType9" cols="12" rows="5"></textarea>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                 <!-- Custom Search String Legend -->
+
+                                                                                <div class="row">
+                                                                                    <div class="col-md-4">
+                                                                                        <div class="custom-margin">
+                                                                                            <label>Custom Search String Legend </label>
+                                                                                            {!! Form::text('custom_f_name', old("custom_f_name"),['placeholder' => '[first_name]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
+                                                                                            {!! Form::text('custom_m_name', old("custom_m_name"),['placeholder' => '[middle_name]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
+                                                                                            {!! Form::text('custom_l_name', old("custom_l_name"),['placeholder' => '[last_name]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
+                                                                                            {!! Form::text('custom_dob', old("custom_dob"),['placeholder' => '[date_of_birth]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
+                                                                                            {!! Form::text('custom_mail', old("custom_mail"),['placeholder' => '[email.0]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_num', old("custom_num"),['placeholder' => '[phone.0]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_u_name', old("custom_u_name"),['placeholder' => '[username.0.username]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_street', old("custom_street"),['placeholder' => '[current_address.street]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_city', old("custom_city"),['placeholder' => '[current_address.city]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_state', old("custom_state"),['placeholder' => '[current_address.state]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_zip', old("custom_zip"),['placeholder' => '[current_address.zip]','class' => 'form-control form-control-sm']) !!}
+                                                                                            {!! Form::text('custom_ins_name', old("custom_ins_name"),['placeholder' => '[educational_institution.0.name]','class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-8">
+
+                                                                                        <div class="custom-margin2">
+                                                                                            <label>Bing Address (use placeholder)</label>
+                                                                                            {!! Form::text('custom_f_name_param', old("custom_f_name_param"),['placeholder' => '([current_address.street], [current_address.city],[current_address.state] [current_address.zip])','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Bing Contact (use placeholder)</label>
+                                                                                            {!! Form::text('custom_m_name_param', old("custom_m_name_param"),['placeholder' => '("[username.0.username]") OR ("[email.0]") OR ("[phone.0]")','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Bing Name (use placeholder)</label>
+                                                                                            {!! Form::text('custom_l_name_param', old("custom_l_name_param"),['placeholder' => '("[first_name][last_name]") | ("[last_name][first_name]")','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Bing Name Address (use placeholder)</label>
+                                                                                            {!! Form::text('custom_dob_param', old("custom_dob_param"),['placeholder' => '("[first_name][last_name]")&("[current_address.street][current_address.city]")','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Bing Name Keyword (use placeholder)</label>
+                                                                                            {!! Form::text('custom_mail_param', old("custom_mail_param"),['placeholder' => '("[first_name][last_name]")','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Google Custom Address 1 (use placeholder)</label>
+                                                                                            {!! Form::text('custom_num_param', old("custom_num_param"),['placeholder' => '[current_address.street][current_address.city] ("[first_name][last_name]" OR "[first_name]*[last_name]") ','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Google Custom Contact (use placeholder)</label>
+                                                                                            {!! Form::text('custom_u_name_param', old("custom_u_name_param"),['placeholder' => '"[email.0]" OR "[phone.0]"','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Google Custom Name (use placeholder)</label>
+                                                                                            {!! Form::text('custom_street_param', old("custom_street_param"),['placeholder' => '"([first_name][middle_name][last_name]") OR ("[first_name]*[last_name]")','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Google Custom Username (use placeholder)</label>
+                                                                                            {!! Form::text('custom_city_param', old("custom_city_param"),['placeholder' => '"[email.0]" OR "[username.0.username]"','class' => 'form-control form-control-sm']) !!}
+                                                                                            <label>Piplv5 Full (use placeholder)</label>
+                                                                                            {!! Form::text('custom_state_param', old("custom_state_param"),['placeholder' => 'minimum_probability=0&minimum_match=1&show_sources=all&live_feeds=&hide_sponsored=&use_https=true','class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-lg-12">
+                                                                                        <div class="form-group">
+                                                                                            <div class="checkbox">
+                                                                                                <label>
+                                                                                                    <input type="checkbox" class="form-check-input"> By Pass Saving Subject <i class="input-frame"></i>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            --}}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {{-- <div class="grid-body" style=" display: none;">
+                                                        <div class="item-wrapper">
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <!-- Report Options-->
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <label style="font-weight: 900;">Report Options </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="grid-body" style="border:2px solid #e8e8e8;">
+                                                                        <div class="item-wrapper">
+                                                                            <div class="item-wrapper">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-2">
+                                                                                        <div class="form-group">
+                                                                                            {!! Form::text('product_type', 100, ['class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="form-group">
+                                                                                            <label>Max low rated hits to include in result </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-2">
+                                                                                        <div class="form-group">
+                                                                                            {!! Form::text('product_type', 40, ['class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="form-group">
+                                                                                            <label>Lowest rating to return (for external defaults to 40) </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-2">
+                                                                                        <div class="form-group">
+                                                                                            {!! Form::text('product_type', 1000, ['class' => 'form-control form-control-sm']) !!}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="form-group">
+                                                                                            <label>Risk Keyword proximity for rating (defaults to 1000) </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Generate LogDebug/Codetrace information <i class="input-frame"></i>
                                                                                             </label>
                                                                                         </div>
                                                                                     </div>
-                                                                                    {{-- Source Options Checkboxes--}}
-                                                                                    <div class="grid-body" style="border:2px solid #e8e8e8;">
-                                                                                        <div class="item-wrapper">
-                                                                                            <div class="row">
-                                                                                                @foreach($source_opt as $key)
-                                                                                                <div class="col-lg-2">
-                                                                                                    <div class="form-group">
-                                                                                                        <div class="checkbox">
-                                                                                                            <label>
-                                                                                                                <input type="checkbox" class="form-check-input"> {{$key}} <i class="input-frame"></i>
-                                                                                                            </label>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                @endforeach
-                                                                                            </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Strip Tags before comparing <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="item-wrapper" style="margin-top: 20px;">
-                                                                                        <div class="row">
-                                                                                            <div class="col-lg-12">
-                                                                                                <div class="form-group">
-                                                                                                    <div class="form-inline">
-                                                                                                        <div class="radio mb-3">
-                                                                                                            <label class="radio-label mr-4">
-                                                                                                                <input name="sample" type="radio" checked="">Perform Cached Search <i class="input-frame"></i>
-                                                                                                            </label>
-                                                                                                        </div>
-                                                                                                        <div class="radio mb-3">
-                                                                                                            <label class="radio-label">
-                                                                                                                <input name="sample" type="radio">Perform Fast Search <i class="input-frame"></i>
-                                                                                                            </label>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Bypass Affinity <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="item-wrapper">
-                                                                                        <!-- Product -->
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-2">
-                                                                                                <label> Product: </label>
-                                                                                            </div>
-                                                                                            <div class="col-md-6">
-                                                                                                <div class="form-group">
-                                                                                                    {!! Form::select('product_type', $product_type, old("product_type"), ['class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Bypass url cache <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
-                                                                                        <!-- Rate Set -->
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-2">
-                                                                                                <label> Rate Set: </label>
-                                                                                            </div>
-                                                                                            <div class="col-md-6">
-                                                                                                <div class="form-group">
-                                                                                                    {!! Form::select('rate_set', $rate_set, old("rate_set"), ['class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Bypass content cache <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
-                                                                                        <!-- Risk Characterstic Company -->
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-2">
-                                                                                                <label> Risk Characterstic
-                                                                                                    Company: </label>
-                                                                                            </div>
-                                                                                            <div class="col-md-6">
-                                                                                                <div class="form-group">
-                                                                                                    {!! Form::select('risk_char_comp',$risk_char_comp, old("risk_char_comp"),['class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Create Data Scientist files <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
-
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-12">
-                                                                                                <label>Enter one or more URLs (each on new line) to bypass searches and process just the URL provided: </label>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="form-group">
-                                                                                                    <textarea name="url_search" value="old('url_search')" class="form-control form-control-sm" id="inputType9" cols="12" rows="5"></textarea>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Test Data Science Indexes <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-12">
-                                                                                                <label>Enter test content to bypass all searching and rate against just this content: </label>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="form-group">
-                                                                                                    <textarea name="test_content" value="old('test_content')" class="form-control form-control-sm" id="inputType9" cols="12" rows="5"></textarea>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="checkbox">
+                                                                                            <label>
+                                                                                                <input type="checkbox" class="form-check-input"> Use Keep-alive feature for long running searches <i class="input-frame"></i>
+                                                                                            </label>
                                                                                         </div>
-                                                                                        {{--Custom Search String Legend--}}
-
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-4">
-                                                                                                        <div class="custom-margin">
-                                                                                                            <label>Custom Search String Legend </label>
-                                                                                                            {!! Form::text('custom_f_name', old("custom_f_name"),['placeholder' => '[first_name]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
-                                                                                                            {!! Form::text('custom_m_name', old("custom_m_name"),['placeholder' => '[middle_name]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
-                                                                                                            {!! Form::text('custom_l_name', old("custom_l_name"),['placeholder' => '[last_name]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
-                                                                                                            {!! Form::text('custom_dob', old("custom_dob"),['placeholder' => '[date_of_birth]','class' => 'form-control form-control-sm','maxlength' => '30']) !!}
-                                                                                                            {!! Form::text('custom_mail', old("custom_mail"),['placeholder' => '[email.0]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_num', old("custom_num"),['placeholder' => '[phone.0]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_u_name', old("custom_u_name"),['placeholder' => '[username.0.username]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_street', old("custom_street"),['placeholder' => '[current_address.street]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_city', old("custom_city"),['placeholder' => '[current_address.city]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_state', old("custom_state"),['placeholder' => '[current_address.state]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_zip', old("custom_zip"),['placeholder' => '[current_address.zip]','class' => 'form-control form-control-sm']) !!}
-                                                                                                            {!! Form::text('custom_ins_name', old("custom_ins_name"),['placeholder' => '[educational_institution.0.name]','class' => 'form-control form-control-sm']) !!}
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                            <div class="col-md-8">
-
-                                                                                                <div class="custom-margin2">
-                                                                                                    <label>Bing Address (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_f_name_param', old("custom_f_name_param"),['placeholder' => '([current_address.street], [current_address.city],[current_address.state] [current_address.zip])','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Bing Contact (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_m_name_param', old("custom_m_name_param"),['placeholder' => '("[username.0.username]") OR ("[email.0]") OR ("[phone.0]")','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Bing Name (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_l_name_param', old("custom_l_name_param"),['placeholder' => '("[first_name][last_name]") | ("[last_name][first_name]")','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Bing Name Address (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_dob_param', old("custom_dob_param"),['placeholder' => '("[first_name][last_name]")&("[current_address.street][current_address.city]")','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Bing Name Keyword (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_mail_param', old("custom_mail_param"),['placeholder' => '("[first_name][last_name]")','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Google Custom Address 1 (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_num_param', old("custom_num_param"),['placeholder' => '[current_address.street][current_address.city] ("[first_name][last_name]" OR "[first_name]*[last_name]") ','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Google Custom Contact (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_u_name_param', old("custom_u_name_param"),['placeholder' => '"[email.0]" OR "[phone.0]"','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Google Custom Name (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_street_param', old("custom_street_param"),['placeholder' => '"([first_name][middle_name][last_name]") OR ("[first_name]*[last_name]")','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Google Custom Username (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_city_param', old("custom_city_param"),['placeholder' => '"[email.0]" OR "[username.0.username]"','class' => 'form-control form-control-sm']) !!}
-                                                                                                    <label>Piplv5 Full (use placeholder)</label>
-                                                                                                    {!! Form::text('custom_state_param', old("custom_state_param"),['placeholder' => 'minimum_probability=0&minimum_match=1&show_sources=all&live_feeds=&hide_sponsored=&use_https=true','class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="row">
-                                                                                                    <div class="col-lg-12">
-                                                                                                        <div class="form-group">
-                                                                                                            <div class="checkbox">
-                                                                                                                <label>
-                                                                                                                    <input type="checkbox" class="form-check-input"> By Pass Saving Subject <i class="input-frame"></i>
-                                                                                                                </label>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                        </div>
-                                                        <div class="grid-body">
-                                                                <div class="item-wrapper">
-                                                                    <div class="row">
-                                                                        <div class="col-lg-12">
-                                                                            {{-- Report Options--}}
-                                                                            <div class="row">
-                                                                                <div class="col-md-2">
-                                                                                    <label style="font-weight: 900;">Report Options </label>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="grid-body" style="border:2px solid #e8e8e8;">
-                                                                                <div class="item-wrapper">
-                                                                                    <div class="item-wrapper">
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-2">
-                                                                                                <div class="form-group">
-                                                                                                    {!! Form::text('product_type', 100, ['class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="form-group">
-                                                                                                    <label>Max low rated hits to include in result </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-2">
-                                                                                                <div class="form-group">
-                                                                                                    {!! Form::text('product_type', 40, ['class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="form-group">
-                                                                                                    <label>Lowest rating to return (for external defaults to 40) </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-2">
-                                                                                                <div class="form-group">
-                                                                                                    {!! Form::text('product_type', 1000, ['class' => 'form-control form-control-sm']) !!}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="form-group">
-                                                                                                    <label>Risk Keyword proximity for rating (defaults to 1000) </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Generate LogDebug/Codetrace information <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Strip Tags before comparing <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Bypass Affinity <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Bypass url cache <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Bypass content cache <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Create Data Scientist files <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Test Data Science Indexes <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-12">
-                                                                                                <div class="checkbox">
-                                                                                                    <label>
-                                                                                                        <input type="checkbox" class="form-check-input"> Use Keep-alive feature for long running searches <i class="input-frame"></i>
-                                                                                                    </label>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
 
-                                                                                        <div class="row">
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="input-group mb-3">
-                                                                                                    <label>Set time Limit of</label><div class="input-group-prepend">{!! Form::text('product_type', 1000, ['class' => 'input-control input-control-sm col-md-3']) !!}<label>seconds</label></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="input-group mb-3">
-                                                                                                    <label>Set Search Source Time Limit of</label><div class="input-group-prepend">{!! Form::text('product_type', 1000, ['class' => 'input-control input-control-sm col-md-3']) !!}<label>seconds</label></div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="input-group mb-3">
-                                                                                                    <label>Multi Curl Limit</label><div class="input-group-prepend">{!! Form::text('product_type', 1000, ['class' => 'input-control input-control-sm col-md-3']) !!}</div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="col-md-10">
-                                                                                                <div class="input-group mb-3">
-                                                                                                    <label>Set Cache Override Date (ex. 2019-01-15) of</label><div class="input-group-prepend">{!! Form::text('product_type', old('product_type'), ['class' => 'input-control input-control-sm col-md-3']) !!}</div>
-                                                                                                </div>
-                                                                                            </div>
+                                                                                <div class="row">
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="input-group mb-3">
+                                                                                            <label>Set time Limit of</label><div class="input-group-prepend">{!! Form::text('product_type', 1000, ['class' => 'input-control input-control-sm col-md-3']) !!}<label>seconds</label></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="input-group mb-3">
+                                                                                            <label>Set Search Source Time Limit of</label><div class="input-group-prepend">{!! Form::text('product_type', 1000, ['class' => 'input-control input-control-sm col-md-3']) !!}<label>seconds</label></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="input-group mb-3">
+                                                                                            <label>Multi Curl Limit</label><div class="input-group-prepend">{!! Form::text('product_type', 1000, ['class' => 'input-control input-control-sm col-md-3']) !!}</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-10">
+                                                                                        <div class="input-group mb-3">
+                                                                                            <label>Set Cache Override Date (ex. 2019-01-15) of</label><div class="input-group-prepend">{!! Form::text('product_type', old('product_type'), ['class' => 'input-control input-control-sm col-md-3']) !!}</div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -741,8 +738,10 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
+
                                                     <!-- Submit divison -->
                                                     <div class="row" style="margin-bottom:30px;">
                                                         <div class="col-lg-2 equel-grid">
@@ -810,6 +809,7 @@
 @endsection
 @section('javascripts')
     <script>
+/*
         $(document).ready(function() {
             // Init only once validation
             $.validateAddress("av-cf6de170ac7cb129b474fd262bd2d37a");
@@ -862,11 +862,9 @@
 						});
 					}
 				}
-				/*
 
 
 
-            */
 
             });
 
@@ -883,7 +881,7 @@
 							{
 								'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 							},
-						url: "{{ route('personal-save')}}",
+						url: "route('personal-save')}}",
 						data: formData,
 						success: function (response) {
 						},
@@ -892,7 +890,7 @@
 					});
             }
         });
-
+*/
 		//  Personal Workbench
 		$(document).ready(function () {
 			$(document).on("click", ".WorkbenchModel", function () {
@@ -957,17 +955,17 @@
 					'<div class="col-md-2">&nbsp;</div>' +
 					'<div class="col-md-3">' +
                         '<div class="form-group">' +
-                            '{!! Form::text('username[]', old("username"), ['placeholder ' => 'Username ','class ' => 'form-control form-control-sm']) !!}' +
+                            '{!! Form::text('social[username][]', old("username"), ['placeholder ' => 'Username ','class ' => 'form-control form-control-sm']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-3">' +
                         '<div class="form-group">' +
-                            '{!! Form::text('social_url[]', old("social_url"), ['placeholder ' => 'Site Link ','class ' => 'form-control form-control-sm']) !!}' +
+                            '{!! Form::text('social[url][]', old("social_url"), ['placeholder ' => 'Site Link ','class ' => 'form-control form-control-sm']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-3">' +
                         '<div class="form-group">' +
-                            '{!! Form::select('site[]', $social, old("site"), ['class ' => 'form-control form-control-sm']) !!}' +
+                            '{!! Form::select('social[site][]', $social, old("site"), ['class ' => 'form-control form-control-sm']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-offset-1 col-md-1">' +
@@ -1058,22 +1056,22 @@
 					'<div class="col-md-2">&nbsp;</div>' +
 					'<div class="col-md-2">' +
                         '<div class="form-group">' +
-                            '{!! Form::text('name ', old("name"), ['placeholder ' => 'First Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
+                            '{!! Form::text('spouse[first_name][] ', old("sp_first_name"), ['placeholder ' => 'First Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-2">' +
                         '<div class="form-group">' +
-                            '{!! Form::text('name ', old("name"), ['placeholder ' => 'Middle Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
+                            '{!! Form::text('spouse[middle_name][] ', old("sp_middle_name"), ['placeholder ' => 'Middle Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-2">' +
                         '<div class="form-group">' +
-                            '{!! Form::text('name ', old("name"), ['placeholder ' => 'Last Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
+                            '{!! Form::text('spouse[last_name][] ', old("sp_last_name"), ['placeholder ' => 'Last Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-2">' +
                         '<div class="form-group">' +
-                            '{!! Form::text('name ', old("name"), ['placeholder ' => 'Maiden Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
+                            '{!! Form::text('spouse[maiden_name][] ', old("sp_maiden_name"), ['placeholder ' => 'Maiden Name ','class ' => 'form-control form-control-sm', 'maxlength ' => '30 ']) !!}' +
                         '</div>' +
 					'</div>' +
 					'<div class="col-md-1">' +

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWAddressTable extends Migration
+class CreateWorkbenchResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateWAddressTable extends Migration
      */
     public function up()
     {
-        Schema::create('w_address', function (Blueprint $table) {
+        Schema::create('workbench__results', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('workbench_id')->unsigned()->index('workbench_workbench_id_foreign');
-            $table->string('street',150)->nullable(true);
-            $table->integer('country_id')->unsigned()->index('countries_country_id_foreign');
-            $table->integer('state_id')->unsigned()->index('states_state_id_foreign');
-            $table->integer('city_id')->unsigned()->index('cities_city_id_foreign');
-            $table->string('zip',30)->nullable(true);
+            $table->integer('source_options_id')->unsigned()->index('workbench_source_options_id_foreign');
+            $table->float('score');
+            $table->json('response');
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateWAddressTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('w_address');
+        Schema::dropIfExists('workbench__results');
     }
 }

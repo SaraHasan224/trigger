@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Sara Hasan, sara@clickysoft.com">
+  <meta name="copyright" content="Clickysoft">
+  <meta name="owner" content="John Pagliaro">
   <title>Trigger - Administrator Panel</title>
   <!-- plugins:css -->
   <link rel="stylesheet" href="{{ asset("admin/assets/vendors/iconfonts/mdi/css/materialdesignicons.css") }}"/>

@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('stylesheets')
 <link href="{{ asset("admin/assets/vendors/datatables/datatables.bundle.css") }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset("admin/assets/vendors/datatables/datatables.bundle.css") }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('styles')
 <style>
@@ -34,7 +35,18 @@
             <li class="breadcrumb-item">
                 <a href="{{ route("personal-form") }}">Personal Search</a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">John Pagliaro</li>
+            @php
+                $first_name = $record->first_name;
+                $middle_name = $record->middle_name;
+                $last_name = $record->last_name;
+                if ($middle_name != '') {
+                    $fullName = $first_name . ' ' . $middle_name . ' ' . $last_name;
+                }
+                else {
+                    $fullName = $first_name . ' ' . $last_name;
+                }
+            @endphp
+            <li class="breadcrumb-item active" aria-current="page">{{$fullName}}</li>
         </ol>
     </nav>
 </div>
@@ -45,7 +57,18 @@
             <div class="email-list-item">
                 <div class="row">
                     <div class="col-md-offset-4 col-md-4">
-                        <img src="http://trigger.local/photos/1/Picture.jpg" class="workbench-img" alt="profile image">
+                        @php
+                            if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('avatar', $result['personal']) && !empty($result['personal']['avatar'])) {
+                                    $avatar = $result['personal']['avatar'];
+                                }else{
+                                    $avatar = asset('admin/users/avatar.png');
+                                }
+                            }else{
+                                    $avatar = asset('admin/users/avatar.png');
+                            }
+                        @endphp
+                        <img src="{{$avatar}}" class="workbench-img" alt="profile image">
                     </div>
                 </div>
             </div>
@@ -55,7 +78,17 @@
                     <div class="workbench-ico">
                         <i class="mdi mdi-human-male-female"></i>
                     </div>
-                    <div class="workbench-detail">Male</div>
+                    @php
+                        $gender = '-';
+                        if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('gender', $result['personal']) && !empty($result['personal']['gender'])) {
+                                    $gender = $result['personal']['gender'];
+                                }else{
+                                     $gender = "-";
+                                }
+                        }
+                    @endphp
+                    <div class="workbench-detail">{{$gender}}</div>
                 </a>
             </div>
             <!-- Phone Number -->
@@ -64,10 +97,18 @@
                     <div class="workbench-ico">
                         <i class="mdi mdi-phone"></i>
                     </div>
+                    @php
+                        $phone_number = '-';
+                        if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('phone_number', $result['personal']) && !empty($result['personal']['phone_number'])) {
+                                    $phone_number = $result['personal']['phone_number'];
+                                }else{
+                                     $phone_number = "-";
+                                }
+                        }
+                    @endphp
                     <div class="workbench-detail">
-                        860-987-2151
-                        <br />
-                        (413) 562-1107
+                        {{$phone_number}}
                     </div>
                 </a>
             </div>
@@ -77,10 +118,19 @@
                     <div class="workbench-ico">
                         <i class="mdi mdi-email"></i>
                     </div>
+                    @php
+                        $email = '-';
+
+                        if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('email', $result['personal']) && !empty($result['personal']['email'])) {
+                                    $email = $result['personal']['email'];
+                                }else{
+                                     $email = "-";
+                                }
+                        }
+                    @endphp
                     <div class="workbench-detail">
-                        jpagliarojr@comsat.net
-                        <br />
-                        jpagliaro@yoursummit.com
+                        {{$email}}
                     </div>
                 </a>
             </div>
@@ -90,8 +140,39 @@
                     <div class="workbench-ico">
                         <i class="fa fa-language"></i>
                     </div>
+                    @php
+                        $language = 'English';
+                        if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('language', $result['personal']) && !empty($result['personal']['language'])) {
+                                    $language = $result['personal']['language'];
+                                }else{
+                                     $language = "English";
+                                }
+                        }
+                    @endphp
                     <div class="workbench-detail">
-                        English
+                        {{$language}}
+                    </div>
+                </a>
+            </div>
+            <!-- Address -->
+            <div class="email-list-item">
+                <a href="#" class="email-list-item-inner">
+                    <div class="workbench-ico">
+                        <i class="mdi mdi mdi-clock-fast"></i>
+                    </div>
+                    @php
+                        $timeZone = '-';
+                        if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('timezone', $result['personal']) && !empty($result['personal']['timezone'])) {
+                                    $timeZone = $result['personal']['timezone'];
+                                }else{
+                                     $timeZone = "-";
+                                }
+                        }
+                    @endphp
+                    <div class="workbench-detail">
+                        {{$timeZone}}
                     </div>
                 </a>
             </div>
@@ -101,10 +182,25 @@
                     <div class="workbench-ico">
                         <i class="mdi mdi-home-map-marker"></i>
                     </div>
+                    @php
+                        $location = '-';
+                        if (array_key_exists('personal', $result)) {
+                                if (array_key_exists('location', $result['personal']) && !empty($result['personal']['location'])) {
+                                    $location = $result['personal']['location'];
+                                }else{
+                                     $location = "-";
+                                }
+                        }
+                        if (array_key_exists('business', $result)) {
+                                if (array_key_exists('business', $result) && !empty($result['business'])) {
+                                        $location = $result['business']['location'];
+                                }else{
+                                     $location = "-";
+                                }
+                        }
+                    @endphp
                     <div class="workbench-detail">
-                        49 Cider Mill Heights,North Granby, CT 06060
-                        <br />
-                        1244 Russel Road,Westfield, MA 01085
+                        {{$location}}
                     </div>
                 </a>
             </div>
@@ -116,7 +212,7 @@
                     <p class="mail-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                 </a>
             </div>-->
-            <div class="email-list-item">
+            <div class="email-list-item" style="display: none;">
                 <div class="mapouter">
                     <div class="gmap_canvas">
                         <iframe width="290" height="200" id="gmap_canvas"
@@ -128,13 +224,13 @@
         </div>
         <div class="email-preview-wrapper">
             <div class="preview-header">
-                <p class="user_name">John Pagliaro</p>
-                <a class="user-email" href="mailto:jpagliaro@yoursummit.com">jpagliaro@yoursummit.com</a>
-                <a class="user-email" href="mailto:jpagliarojr@comsat.net">jpagliarojr@comsat.net</a>
-                <p class="date">23/5/2018</p>
+                <p class="user_name">{{$fullName}}</p>
+                <a class="user-email" href="mailto:jpagliaro@yoursummit.com">{{$email}}</a>
+                {{--<a class="user-email" href="mailto:jpagliarojr@comsat.net">jpagliarojr@comsat.net</a>--}}
+                <p class="date">{{$result_date}}</p>
             </div>
-            <div class="email-container">
-                <div class="email-content">
+            <div class="email-container" >
+                <div class="email-content" style="display:none;">
                     <h2 class="grid-title">Presence</h2>
                     <div class="item-wrapper">
                         <div id="sample_c3-bar-chart" class="sample-chart"></div>
@@ -147,35 +243,102 @@
                                 <div class="workbench-title">
                                     Relationship
                                 </div>
+
+                                @php
+                                    $relationship = '-';
+                                    if (array_key_exists('personal', $result)) {
+                                            if (array_key_exists('relationship', $result['personal']) && !empty($result['personal']['relationship'])) {
+                                                $relationship = $result['personal']['relationship'];
+                                            }else{
+                                                 $relationship = "-";
+                                            }
+                                    }
+                                @endphp
                                 <div class="workbench-detail2">
-                                    49 Cider Mill Heights,North Granby, CT 06060
-                                    <br />
-                                    1244 Russel Road,Westfield, MA 01085
+                                    {{$relationship}}
+                                </div>
+                            </a>
+                        </div>
+                        @php
+                            $job = '';
+                             $works_at = "-";
+                             $work_role = "-";
+                             $company_domain = "-";
+                             $business_description = "-";
+                            if (array_key_exists('personal', $result)) {
+                                    if (array_key_exists('works_at', $result['personal']) && !empty($result['personal']['works_at'])) {
+                                        $works_at = $result['personal']['works_at'];
+                                        $work_role = $result['personal']['work_role'];
+                                        $company_domain = $result['personal']['company_domain'];
+                                    }else{
+                                         $works_at = "-";
+                                        $work_role = "-";
+                                        $company_domain = "-";
+                                    }
+                            }
+                             if (array_key_exists('business', $result)) {
+                              if (array_key_exists('description', $result['business']) && !empty($result['business']['description'])) {
+                                $business_description =  $result['business']['description'];
+                              }else{ $business_description = "-";}
+                              if (array_key_exists('name', $result['business']) && !empty($result['business']['name'])) {
+                                if($works_at == "-") { $works_at =  $result['business']['name']; }
+                              }else{ $works_at = "-";}
+                             }
+                            $job = '<b>Works At:</b> '.$works_at.' <br/> <b>Job Role:</b> '.$work_role.' <br/> <b>Company Domain:</b>'.$company_domain.'<br/> <b>Company Description:</b> '.$business_description;
+
+                        @endphp
+                        <div class="email-list-item">
+                            <a href="#" class="email-list-item-inner">
+                                <div class="workbench-title">
+                                    Works At
+                                </div>
+                                <div class="workbench-detail2">
+                                    {!! $works_at !!}
                                 </div>
                             </a>
                         </div>
                         <div class="email-list-item">
                             <a href="#" class="email-list-item-inner">
                                 <div class="workbench-title">
-                                    Job
+                                    Work Role
                                 </div>
                                 <div class="workbench-detail2">
-                                    -
+                                    {!! $work_role !!}
+                                </div>
+                            </a>
+                        </div>
+                        <div class="email-list-item">
+                            <a href="#" class="email-list-item-inner">
+                                <div class="workbench-title">
+                                    Company Domain
+                                </div>
+                                <div class="workbench-detail2">
+                                    {!! $company_domain !!}
+                                </div>
+                            </a>
+                        </div>
+                        <div class="email-list-item">
+                            <a href="#" class="email-list-item-inner">
+                                <div class="workbench-title">
+                                    Company Description
+                                </div>
+                                <div class="workbench-detail2">
+                                    {!! $business_description !!}
                                 </div>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="email-attachments">
-                    <p>Jobs</p>
+                {{--<div class="email-attachments">--}}
+                    {{--<p>Jobs</p>--}}
 
 
-                </div>
+                {{--</div>--}}
             </div>
         </div>
     </div>
     <!-- Images -->
-    <div class="row">
+    <div class="row" style="display: none">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -215,7 +378,7 @@
         </div>
     </div>
     <!-- Social -->
-    <div class="row">
+    <div class="row" style="display: none">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -279,7 +442,7 @@
         </div>
     </div>
     <!-- Related Websites -->
-    <div class="row">
+    <div class="row" style="display: none">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -308,7 +471,7 @@
         </div>
     </div>
     <!-- Web Results -->
-    <div class="row">
+    <div class="row" style="display: none">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -349,7 +512,7 @@
         </div>
     </div>
     <!-- Web Results -->
-    <div class="row">
+    <div class="row" style="display: none">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">

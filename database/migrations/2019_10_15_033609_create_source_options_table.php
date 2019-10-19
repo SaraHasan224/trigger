@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWEmployerTable extends Migration
+class CreateSourceOptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateWEmployerTable extends Migration
      */
     public function up()
     {
-        Schema::create('w_employer', function (Blueprint $table) {
+        Schema::create('source_options', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('workbench_id')->unsigned()->index('workbench_workbench_id_foreign');
-            $table->string('name',30)->nullable(true);
-            $table->string('job_title',30)->nullable(true);
+            $table->integer('type');
+            $table->string('name',255);
+            $table->integer('default');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateWEmployerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('w_employer');
+        Schema::dropIfExists('source_options');
     }
 }
