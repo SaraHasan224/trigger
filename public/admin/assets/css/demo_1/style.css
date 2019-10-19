@@ -559,7 +559,7 @@ footer {
           position: sticky;
           top: 0px;
           background: #f9fafb;
-          z-index: 99; }
+          z-index: 0; }
   .viewport-header{
     position: -webkit-sticky;
     position: sticky;

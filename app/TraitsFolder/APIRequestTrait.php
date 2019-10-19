@@ -298,15 +298,7 @@ trait APIRequestTrait
                 email, webhook_url, given_name(First name of person), family_name, ip_address, location, company, company_domain
                 linkedin, twitter, facebook
         */
-        $rules = [
-            'p_email'=>'required|email',
-        ];
-        $v = Validator::make(Input::all(), $rules, [
-            "p_email.required" => "Please enter email.",
-        ]);
-        if ($v->fails()) {
-            return redirect()->back()->withErrors($v->errors());
-        }else {
+
             $first_name = escape(Input::get('first_name'));
             $middle_name = escape(Input::get('middle_name'));
             $last_name = escape(Input::get('last_name'));
@@ -352,6 +344,7 @@ trait APIRequestTrait
             }
 
             $curl = curl_init();
+
             curl_setopt_array($curl, array(
                 CURLOPT_URL => $endpoint,
                 CURLOPT_RETURNTRANSFER => true,
@@ -361,49 +354,59 @@ trait APIRequestTrait
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "GET",
                 CURLOPT_HTTPHEADER => array(
+                    "Accept: */*",
+//                    "Accept-Encoding: gzip, deflate",
                     "Authorization: Basic c2tfNWIyODdiZmZmNWU0ZmUzYWMxOGJlZGUwNmU1NmYxZTU6",
                     "Cache-Control: no-cache",
                     "Connection: keep-alive",
+                    "Host: person-stream.clearbit.com",
+//                    "Postman-Token: 703c392e-fbc8-40a5-b331-aad5707b4d6f,0448b996-1469-4480-a47f-6a9701fef06c",
+//                    "User-Agent: PostmanRuntime/7.18.0",
+                    "cache-control: no-cache"
                 ),
             ));
 
-            $response = json_decode(curl_exec($curl));
+            $response = curl_exec($curl);
             $err = curl_error($curl);
+
             curl_close($curl);
-            if($err != "" && $response != null)
-            {
+//            if($err != "" && $response != null)
+//            {
                 if ($err) {
                     echo "cURL Error #:" . $err;
                     die;
                 }
                 else {
                     // Get match score
-                    $score = $this->calc_score($response);
+                    if($response != null)
+                    {
+                        $score = $this->calc_score($response);
 
-                    Notification::Notify(
-                        (Auth::user()->user_type == 1)  ? 1 : Auth::user()->user_type,
-                        $this->to_id,
-                        "User: ".Auth::user()->name." (Having Role: ".Auth::user()->role->name.") "."searched person record against name: ".$names." successfully using Clearbit API",
-                        '/admin-dashboard/workbench/personal',
-                        Auth::user()->id,
-                        ' bg-inverse-secondary text-info',
-                        'mdi mdi-account-search'
-                    );
+                        Notification::Notify(
+                            (Auth::user()->user_type == 1)  ? 1 : Auth::user()->user_type,
+                            $this->to_id,
+                            "User: ".Auth::user()->name." (Having Role: ".Auth::user()->role->name.") "."searched person record against name: ".$names." successfully using Clearbit API",
+                            '/admin-dashboard/workbench/personal',
+                            Auth::user()->id,
+                            ' bg-inverse-secondary text-info',
+                            'mdi mdi-account-search'
+                        );
 
-                    // Save record in a Database
-                    $result = new Workbench_Result();
-                    $result->workbench_id = $workbench_id;
-                    $result->response = json_encode($response);
-                    $result->source_options_id = 14;
-                    $result->score = $score;
-                    $result->save();
+                        // Save record in a Database
+                        $result = new Workbench_Result();
+                        $result->workbench_id = $workbench_id;
+                        $result->response = json_encode($response);
+                        $result->source_options_id = 14;
+                        $result->score = $score;
+                        $result->save();
+                    }
+                    else{
+                        print_r('Error while proceeding request');
+                        return redirect()->back()->with('warning_msg', "Error while proceeding request.");
+                    }
                 }
-            }else{
-                print_r('Error while proceeding request');
-                return redirect()->back()->with('success', "Error while proceeding request.");
-            }
 
-        }
+
     }
 
     public function piplev5($workbench_id)

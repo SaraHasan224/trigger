@@ -180,185 +180,205 @@ class Workbench extends AdminController
         //Get All Form Data
         $data = Input::all();
 //        dd($data);
-
-        $workbench_record = new APIModel();
-        $workbench_record->first_name = $data['first_name'];
-        $workbench_record->middle_name = $data['middle_name'];
-        $workbench_record->last_name = $data['last_name'];
-        $workbench_record->dob = $data['birth_date'];
-        $workbench_record->email = $data['p_email'];
-        $workbench_record->street = $data['street_address'];
-        $workbench_record->country = 'US';
-        $workbench_record->state = $data['state'];
-        $workbench_record->zip = $data['zip'];
-        $workbench_record->current_emp = $data['employer_name'];
-        $workbench_record->job_title = $data['job_title'];
-        $workbench_record->comment = $data['comments'];
-        $workbench_record->save();
-        //  Social
-        $social_name = [];
-        $social_url = [];
-        $social_site = [];
-        $social_media = [];
-        foreach ($data['social']['username'] as $username){
-            if($username != null){ array_push($social_name, $username); }
-        }
-        foreach ($data['social']['url'] as $url){
-            if($url != null){ array_push($social_url, $url); }
-        }
-        foreach ($data['social']['site'] as $site){
-            if($site != null){ array_push($social_site, $site); }
-        }
-        if(!empty($social_name) || !empty($social_url) || !empty($social_site))
-        {
-            for ($i = 0;$i < count($social_name); $i++)
-            {
-                $w_social = new w_socialmedia();
-                $w_social->workbench_id = $workbench_record->id;
-                $w_social->profile = !empty($social_name[$i]) ? $social_name[$i] : '';
-                $w_social->profile_link = !empty($social_url[$i]) ? $social_url[$i] : '';
-                $w_social->forum = !empty($social_site[$i]) ? $social_site[$i] : '';
-                $w_social->save();
-
-                $social_media[$i] = [
-                    "profile" => !empty($social_name[$i]) ? $social_name[$i] : '',
-                    "profile_link" => !empty($social_url[$i]) ? $social_url[$i] : '',
-                    "forum" => !empty($social_site[$i]) ? $social_site[$i] : ''
-                ];
-            }
-        }
-        //  Spouse
-        $spouse_fname = [];
-        $spouse_mname = [];
-        $spouse_lname = [];
-        $spouse_maidenname = [];
-        foreach ($data['spouse']['first_name'] as $spouse) {    if($spouse != null){ array_push($spouse_fname, $spouse); }   }
-        foreach ($data['spouse']['middle_name'] as $spouse) {   if($spouse != null){  array_push($spouse_mname, $spouse); }   }
-        foreach ($data['spouse']['last_name'] as $spouse) {   if($spouse != null){  array_push($spouse_lname, $spouse);  }  }
-        foreach ($data['spouse']['maiden_name'] as $spouse) {   if($spouse != null){  array_push($spouse_maidenname, $spouse); }   }
-        if(!empty($spouse_fname) || !empty($spouse_mname) || !empty($spouse_lname) || !empty($spouse_maidenname))
-        {
-            for($i=0;$i<count($spouse_fname);$i++)
-            {
-                $spouse = new w_spouse();
-                $spouse->workbench_id = $workbench_record->id;
-                $spouse->first_name = $spouse_fname[$i];
-                $spouse->middle_name = $spouse_mname[$i];
-                $spouse->last_name = $spouse_lname[$i];
-                $spouse->maiden_name = $spouse_maidenname[$i];
-                $spouse->save();
-            }
-        }
-
-        // Phone Number
-        foreach ($data['phone_number'] as $key => $num) {
-            if($num != null){
-                $phone_num = new w_phone();
-                $phone_num->workbench_id = $workbench_record->id;
-                $phone_num->number = $num;
-                $phone_num->save();
-            }
-        }
-
-        // School Name
-        foreach ($data['school_name'] as $key => $num) {
-            if($num != null){
-                $school = new w_school();
-                $school->workbench_id = $workbench_record->id;
-                $school->name = $num;
-                $school->save();
-            }
-        }
-
-
-
-        //Select options checked (APIs that has to be hit
-        $checked_option = Input::get('opt');
-
-        $source_opt = SourceOption::where('type',0)->where('default',1)->get();
-        foreach ($source_opt as $opt)
-        {
-            $value_exists = array_key_exists($opt->identifier_name,$checked_option);
-//            dd($opt->identifier_name);
-            if($value_exists)
-            {
-                switch ($opt->identifier_name) {
-                    case 'bing-address':
-                        $this->bingAddress();
-                        break;
-                    case 'bing-alias':
-                        $this->bingAddress();
-                        break;
-                    case 'bing-contact':
-                        $this->bingAddress();
-                        break;
-                    case 'bing-name':
-                        $this->bingAddress();
-                        break;
-                    case 'bing-name-address':
-                        $this->bingAddress();
-                        break;
-                    case 'bing-name-dob':
-                        $this->bingAddress();
-                        break;
-                    case 'bing-name-keyword':
-                        $this->bingAddress();
-                        break;
-                    case 'byteplant':
-                        $this->bingAddress();
-                        break;
-                    case 'clearbit':
-                        $this->clearbit($workbench_record->id);
-                        break;
-                    case 'flip-top':
-                        $this->bingAddress();
-                        break;
-                    case 'full-contact':
-                        $this->bingAddress();
-                        break;
-                    case 'g-cust_address1':
-                        $this->bingAddress();
-                        break;
-                    case 'g-cust_contact':
-                        $this->bingAddress();
-                        break;
-                    case 'g-cust_name':
-                        $this->bingAddress();
-                        break;
-                    case 'g-cust_dob':
-                        $this->bingAddress();
-                        break;
-                    case 'g-cust_username':
-                        $this->bingAddress();
-                        break;
-                    case 'g-site_address1':
-                        $this->bingAddress();
-                        break;
-                    case 'g-site_contact':
-                        $this->bingAddress();
-                        break;
-                    case 'g-site_name':
-                        $this->bingAddress();
-                        break;
-                    case 'g-site_dob':
-                        $this->bingAddress();
-                        break;
-                    case 'g-site_obit':
-                        $this->bingAddress();
-                        break;
-                    case 'g-site_username':
-                        $this->bingAddress();
-                        break;
-                    case 'piple':
-                        $this->bingAddress();
-                        break;
-                    case 'piplev5':
-                        $this->bingAddress();
-                        break;
+        $rules = [
+            'p_email'=>'required|email',
+        ];
+        $v = Validator::make(Input::all(), $rules, [
+            "p_email.required" => "Please enter email.",
+        ]);
+        if ($v->fails()) {
+            return redirect()->back()->withErrors($v->errors());
+        }else {
+            $workbench_record = new APIModel();
+            $workbench_record->first_name = $data['first_name'];
+            $workbench_record->middle_name = $data['middle_name'];
+            $workbench_record->last_name = $data['last_name'];
+            $workbench_record->dob = $data['birth_date'];
+            $workbench_record->email = $data['p_email'];
+            $workbench_record->street = $data['street_address'];
+            $workbench_record->country = 'US';
+            $workbench_record->state = $data['state'];
+            $workbench_record->zip = $data['zip'];
+            $workbench_record->current_emp = $data['employer_name'];
+            $workbench_record->job_title = $data['job_title'];
+            $workbench_record->comment = $data['comments'];
+            $workbench_record->save();
+            //  Social
+            $social_name = [];
+            $social_url = [];
+            $social_site = [];
+            $social_media = [];
+            foreach ($data['social']['username'] as $username) {
+                if ($username != null) {
+                    array_push($social_name, $username);
                 }
             }
+            foreach ($data['social']['url'] as $url) {
+                if ($url != null) {
+                    array_push($social_url, $url);
+                }
+            }
+            foreach ($data['social']['site'] as $site) {
+                if ($site != null) {
+                    array_push($social_site, $site);
+                }
+            }
+            if (!empty($social_name) || !empty($social_url) || !empty($social_site)) {
+                for ($i = 0; $i < count($social_name); $i++) {
+                    $w_social = new w_socialmedia();
+                    $w_social->workbench_id = $workbench_record->id;
+                    $w_social->profile = !empty($social_name[$i]) ? $social_name[$i] : '';
+                    $w_social->profile_link = !empty($social_url[$i]) ? $social_url[$i] : '';
+                    $w_social->forum = !empty($social_site[$i]) ? $social_site[$i] : '';
+                    $w_social->save();
+
+                    $social_media[$i] = ["profile" => !empty($social_name[$i]) ? $social_name[$i] : '', "profile_link" => !empty($social_url[$i]) ? $social_url[$i] : '', "forum" => !empty($social_site[$i]) ? $social_site[$i] : ''];
+                }
+            }
+            //  Spouse
+            $spouse_fname = [];
+            $spouse_mname = [];
+            $spouse_lname = [];
+            $spouse_maidenname = [];
+            foreach ($data['spouse']['first_name'] as $spouse) {
+                if ($spouse != null) {
+                    array_push($spouse_fname, $spouse);
+                }
+            }
+            foreach ($data['spouse']['middle_name'] as $spouse) {
+                if ($spouse != null) {
+                    array_push($spouse_mname, $spouse);
+                }
+            }
+            foreach ($data['spouse']['last_name'] as $spouse) {
+                if ($spouse != null) {
+                    array_push($spouse_lname, $spouse);
+                }
+            }
+            foreach ($data['spouse']['maiden_name'] as $spouse) {
+                if ($spouse != null) {
+                    array_push($spouse_maidenname, $spouse);
+                }
+            }
+            if (!empty($spouse_fname) || !empty($spouse_mname) || !empty($spouse_lname) || !empty($spouse_maidenname)) {
+                for ($i = 0; $i < count($spouse_fname); $i++) {
+                    $spouse = new w_spouse();
+                    $spouse->workbench_id = $workbench_record->id;
+                    $spouse->first_name = $spouse_fname[$i];
+                    $spouse->middle_name = $spouse_mname[$i];
+                    $spouse->last_name = $spouse_lname[$i];
+                    $spouse->maiden_name = $spouse_maidenname[$i];
+                    $spouse->save();
+                }
+            }
+
+            // Phone Number
+            foreach ($data['phone_number'] as $key => $num) {
+                if ($num != null) {
+                    $phone_num = new w_phone();
+                    $phone_num->workbench_id = $workbench_record->id;
+                    $phone_num->number = $num;
+                    $phone_num->save();
+                }
+            }
+
+            // School Name
+            foreach ($data['school_name'] as $key => $num) {
+                if ($num != null) {
+                    $school = new w_school();
+                    $school->workbench_id = $workbench_record->id;
+                    $school->name = $num;
+                    $school->save();
+                }
+            }
+
+
+            //Select options checked (APIs that has to be hit
+            $checked_option = Input::get('opt');
+
+            $source_opt = SourceOption::where('type', 0)->where('default', 1)->get();
+            foreach ($source_opt as $opt) {
+                $value_exists = array_key_exists($opt->identifier_name, $checked_option);
+//            dd($opt->identifier_name);
+                if ($value_exists) {
+                    switch ($opt->identifier_name) {
+                        case 'bing-address':
+                            $this->bingAddress();
+                            break;
+                        case 'bing-alias':
+                            $this->bingAddress();
+                            break;
+                        case 'bing-contact':
+                            $this->bingAddress();
+                            break;
+                        case 'bing-name':
+                            $this->bingAddress();
+                            break;
+                        case 'bing-name-address':
+                            $this->bingAddress();
+                            break;
+                        case 'bing-name-dob':
+                            $this->bingAddress();
+                            break;
+                        case 'bing-name-keyword':
+                            $this->bingAddress();
+                            break;
+                        case 'byteplant':
+                            $this->bingAddress();
+                            break;
+                        case 'clearbit':
+                            $this->clearbit($workbench_record->id);
+                            break;
+                        case 'flip-top':
+                            $this->bingAddress();
+                            break;
+                        case 'full-contact':
+                            $this->bingAddress();
+                            break;
+                        case 'g-cust_address1':
+                            $this->bingAddress();
+                            break;
+                        case 'g-cust_contact':
+                            $this->bingAddress();
+                            break;
+                        case 'g-cust_name':
+                            $this->bingAddress();
+                            break;
+                        case 'g-cust_dob':
+                            $this->bingAddress();
+                            break;
+                        case 'g-cust_username':
+                            $this->bingAddress();
+                            break;
+                        case 'g-site_address1':
+                            $this->bingAddress();
+                            break;
+                        case 'g-site_contact':
+                            $this->bingAddress();
+                            break;
+                        case 'g-site_name':
+                            $this->bingAddress();
+                            break;
+                        case 'g-site_dob':
+                            $this->bingAddress();
+                            break;
+                        case 'g-site_obit':
+                            $this->bingAddress();
+                            break;
+                        case 'g-site_username':
+                            $this->bingAddress();
+                            break;
+                        case 'piple':
+                            $this->bingAddress();
+                            break;
+                        case 'piplev5':
+                            $this->bingAddress();
+                            break;
+                    }
+                }
+            }
+            return redirect('admin-dashboard/workbench/personal/result/' . $workbench_record->id);
         }
-      return redirect('admin-dashboard/workbench/personal/result/'.$workbench_record->id);
     }
 
 
