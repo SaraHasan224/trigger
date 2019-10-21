@@ -20,6 +20,7 @@ trait APIRequestTrait
     {
         global $keyCount;
         global $nullCount;
+//        dd($response);
 //        $json = json_decode($response,true);
         $json = json_decode(json_encode($response),true);
         $keyCount = $nullCount = 0;
@@ -87,6 +88,7 @@ trait APIRequestTrait
     {
         global $result_api;
         global $final_res;
+       // dd($result);
 //        foreach ($result as $item) {
             if($result->source_options_id == 14)
             {
@@ -96,7 +98,6 @@ trait APIRequestTrait
 
                 global $i;
                 $i = 0;
-
                 foreach ($result_api as $res_key => $v)
                 {
                     if($res_key == "person")
@@ -378,24 +379,23 @@ trait APIRequestTrait
                 }
                 else {
                     // Get match score
-                    if($response != null)
+                    if($response != null || $response != "")
                     {
-                        $score = $this->calc_score($response);
+                        $score = $this->calc_score(json_decode($response,true));
 
                         Notification::Notify(
                             (Auth::user()->user_type == 1)  ? 1 : Auth::user()->user_type,
                             $this->to_id,
                             "User: ".Auth::user()->name." (Having Role: ".Auth::user()->role->name.") "."searched person record against name: ".$names." successfully using Clearbit API",
-                            '/admin-dashboard/workbench/personal',
+                            '/admin-dashboard/workbench/personal/result/'.$workbench_id,
                             Auth::user()->id,
                             ' bg-inverse-secondary text-info',
                             'mdi mdi-account-search'
                         );
-
                         // Save record in a Database
                         $result = new Workbench_Result();
                         $result->workbench_id = $workbench_id;
-                        $result->response = json_encode($response);
+                        $result->response = $response;
                         $result->source_options_id = 14;
                         $result->score = $score;
                         $result->save();

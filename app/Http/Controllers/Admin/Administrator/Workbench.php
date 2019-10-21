@@ -536,7 +536,7 @@ class Workbench extends AdminController
         }
 
         $this->data['result'] = $result_parsed;
-//        dd($this->data);
+       // dd($this->data);
         return view('admin.administrator.workbench.result-personal', $this->data);
     }
 

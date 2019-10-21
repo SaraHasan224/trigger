@@ -575,6 +575,16 @@
         [1, "asc"]
     ];
 
+  if( window.localStorage )
+  {
+    if( !localStorage.getItem('firstLoad') )
+    {
+      localStorage['firstLoad'] = true;
+      window.location.reload();
+    }  
+    else
+      localStorage.removeItem('firstLoad');
+  }
 </script>
 <script src="{{ asset("admin/assets/scripts/datatable-instance.js") }}" type="text/javascript"></script>
 @endsection
