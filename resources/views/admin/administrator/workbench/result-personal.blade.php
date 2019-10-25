@@ -35,18 +35,7 @@
             <li class="breadcrumb-item">
                 <a href="{{ route("personal-form") }}">Personal Search</a>
             </li>
-            @php
-                $first_name = $record->first_name;
-                $middle_name = $record->middle_name;
-                $last_name = $record->last_name;
-                if ($middle_name != '') {
-                    $fullName = $first_name . ' ' . $middle_name . ' ' . $last_name;
-                }
-                else {
-                    $fullName = $first_name . ' ' . $last_name;
-                }
-            @endphp
-            <li class="breadcrumb-item active" aria-current="page">{{$fullName}}</li>
+            <li class="breadcrumb-item active" aria-current="page">{{$result['fullName']}}</li>
         </ol>
     </nav>
 </div>
@@ -57,18 +46,7 @@
             <div class="email-list-item">
                 <div class="row">
                     <div class="col-md-offset-4 col-md-4">
-                        @php
-                            if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('avatar', $result['personal']) && !empty($result['personal']['avatar'])) {
-                                    $avatar = $result['personal']['avatar'];
-                                }else{
-                                    $avatar = asset('admin/users/avatar.png');
-                                }
-                            }else{
-                                    $avatar = asset('admin/users/avatar.png');
-                            }
-                        @endphp
-                        <img src="{{$avatar}}" class="workbench-img" alt="profile image">
+                        <img src="{{$result['display']}}" class="workbench-img" alt="profile image">
                     </div>
                 </div>
             </div>
@@ -76,62 +54,15 @@
             <div class="email-list-item">
                 <a href="#" class="email-list-item-inner">
                     <div class="workbench-ico">
-                        <i class="mdi mdi-human-male-female"></i>
+                        @if(strtolower($result['gender']) == "male")
+                            <i class="mdi mdi-human-male"></i>
+                        @elseif(strtolower($result['gender']) == "female")
+                            <i class="mdi mdi-human-female"></i>
+                        @else
+                            <i class="mdi mdi-human"></i>
+                        @endif
                     </div>
-                    @php
-                        $gender = '-';
-                        if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('gender', $result['personal']) && !empty($result['personal']['gender'])) {
-                                    $gender = $result['personal']['gender'];
-                                }else{
-                                     $gender = "-";
-                                }
-                        }
-                    @endphp
-                    <div class="workbench-detail">{{$gender}}</div>
-                </a>
-            </div>
-            <!-- Phone Number -->
-            <div class="email-list-item">
-                <a href="#" class="email-list-item-inner">
-                    <div class="workbench-ico">
-                        <i class="mdi mdi-phone"></i>
-                    </div>
-                    @php
-                        $phone_number = '-';
-                        if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('phone_number', $result['personal']) && !empty($result['personal']['phone_number'])) {
-                                    $phone_number = $result['personal']['phone_number'];
-                                }else{
-                                     $phone_number = "-";
-                                }
-                        }
-                    @endphp
-                    <div class="workbench-detail">
-                        {{$phone_number}}
-                    </div>
-                </a>
-            </div>
-            <!-- Email Address -->
-            <div class="email-list-item">
-                <a href="#" class="email-list-item-inner">
-                    <div class="workbench-ico">
-                        <i class="mdi mdi-email"></i>
-                    </div>
-                    @php
-                        $email = '-';
-
-                        if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('email', $result['personal']) && !empty($result['personal']['email'])) {
-                                    $email = $result['personal']['email'];
-                                }else{
-                                     $email = "-";
-                                }
-                        }
-                    @endphp
-                    <div class="workbench-detail">
-                        {{$email}}
-                    </div>
+                    <div class="workbench-detail">{{$result['gender']}}</div>
                 </a>
             </div>
             <!-- Language -->
@@ -140,70 +71,47 @@
                     <div class="workbench-ico">
                         <i class="fa fa-language"></i>
                     </div>
-                    @php
-                        $language = 'English';
-                        if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('language', $result['personal']) && !empty($result['personal']['language'])) {
-                                    $language = $result['personal']['language'];
-                                }else{
-                                     $language = "English";
-                                }
-                        }
-                    @endphp
                     <div class="workbench-detail">
-                        {{$language}}
+                        {{ strtoupper($result['language'])}}
                     </div>
                 </a>
             </div>
-            <!-- Address -->
+            <!-- country -->
+            <div class="email-list-item">
+                <a href="#" class="email-list-item-inner">
+                    <div class="workbench-ico">
+                        <i class="mdi mdi-web"></i>
+                    </div>
+                    <div class="workbench-detail">
+                        {{ $result['country']}}
+                    </div>
+                </a>
+            </div>
+            <!-- timeZone -->
             <div class="email-list-item">
                 <a href="#" class="email-list-item-inner">
                     <div class="workbench-ico">
                         <i class="mdi mdi mdi-clock-fast"></i>
                     </div>
-                    @php
-                        $timeZone = '-';
-                        if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('timezone', $result['personal']) && !empty($result['personal']['timezone'])) {
-                                    $timeZone = $result['personal']['timezone'];
-                                }else{
-                                     $timeZone = "-";
-                                }
-                        }
-                    @endphp
                     <div class="workbench-detail">
-                        {{$timeZone}}
+                        {{ $result['timeZone']}}
                     </div>
                 </a>
             </div>
-            <!-- Address -->
+            <!-- Longitude and Latitude -->
+            @if($result['lat'] != "" && $result['lng'] != '')
             <div class="email-list-item">
                 <a href="#" class="email-list-item-inner">
                     <div class="workbench-ico">
                         <i class="mdi mdi-home-map-marker"></i>
                     </div>
-                    @php
-                        $location = '-';
-                        if (array_key_exists('personal', $result)) {
-                                if (array_key_exists('location', $result['personal']) && !empty($result['personal']['location'])) {
-                                    $location = $result['personal']['location'];
-                                }else{
-                                     $location = "-";
-                                }
-                        }
-                        if (array_key_exists('business', $result)) {
-                                if (array_key_exists('business', $result) && !empty($result['business'])) {
-                                        $location = $result['business']['location'];
-                                }else{
-                                     $location = "-";
-                                }
-                        }
-                    @endphp
                     <div class="workbench-detail">
-                        {{$location}}
+                        Latitude: {{$result['lat']}} <br/>
+                        Longitude: {{$result['lng']}}
                     </div>
                 </a>
             </div>
+            @endif
             <!--<div class="email-list-item">
                 <a href="#" class="email-list-item-inner">
                     <img class="profile-img" src="http://www.placehold.it/50x50" alt="profile image">
@@ -212,7 +120,7 @@
                     <p class="mail-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                 </a>
             </div>-->
-            <div class="email-list-item" style="display: none;">
+            <div class="email-list-item">
                 <div class="mapouter">
                     <div class="gmap_canvas">
                         <iframe width="290" height="200" id="gmap_canvas"
@@ -224,8 +132,10 @@
         </div>
         <div class="email-preview-wrapper">
             <div class="preview-header">
-                <p class="user_name">{{$fullName}}</p>
-                <a class="user-email" href="mailto:jpagliaro@yoursummit.com">{{$email}}</a>
+                <p class="user_name">{{$result['fullName']}}</p>
+                {{--@foreach($result['emails'] as $item)--}}
+                    {{--<a class="user-email" href="{!! $item !!}">{!! $item !!}</a>--}}
+                {{--@endforeach--}}
                 {{--<a class="user-email" href="mailto:jpagliarojr@comsat.net">jpagliarojr@comsat.net</a>--}}
                 <p class="date">{{$result_date}}</p>
             </div>
@@ -236,109 +146,133 @@
                         <div id="sample_c3-bar-chart" class="sample-chart"></div>
                     </div>
                 </div>
+                <!-- Email -->
+                <div class="grid">
+                    <div class="email-aside-list">
+                        <div class="email-list-item">
+                            <div class="email-list-item-inner">
+                                <div class="workbench-title">
+                                    <i class="mdi mdi-email"></i> Email Address
+                                </div>
+                                <div class="workbench-detail2">
+                                    <div class="row">
+                                    @foreach($result['emails'] as $key => $item)
+                                            @if($key%2 == 0)
+                                                <div class="col-md-6">
+                                                    {!! $item !!}<br/>
+                                                </div>
+                                            @else
+                                                <div class="col-md-6">
+                                                    {!! $item !!}<br/>
+                                                </div>
+                                            @endif
+                                    @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Phone Number -->
+                <div class="grid">
+                    <div class="email-aside-list">
+                        <div class="email-list-item">
+                            <div class="email-list-item-inner">
+                                <div class="workbench-title">
+                                    <i class="mdi mdi-phone"></i> Phone Number
+                                </div>
+                                <div class="workbench-detail2">
+                                    <div class="row">
+                                        @foreach($result['phone_number'] as $key => $num)
+                                            @if($key%2 == 0)
+                                                <div class="col-md-6">
+                                                    {!! $num !!}<br/>
+                                                </div>
+                                            @else
+                                                <div class="col-md-6">
+                                                    {!! $num !!}<br/>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Address -->
+                <div class="grid">
+                    <div class="email-aside-list">
+                        <div class="email-list-item">
+                            <div class="email-list-item-inner">
+                                <div class="workbench-title">
+                                    <i class="mdi mdi-home-map-marker"></i> Location
+                                </div>
+                                <div class="workbench-detail2">
+                                    @foreach($result['locations'] as $item)
+                                        {!! $item !!}
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Relations -->
                 <div class="grid">
                     <div class="email-aside-list">
                         <div class="email-list-item">
                             <a href="#" class="email-list-item-inner">
                                 <div class="workbench-title">
-                                    Relationship
-                                </div>
-
-                                @php
-                                    $relationship = '-';
-                                    if (array_key_exists('personal', $result)) {
-                                            if (array_key_exists('relationship', $result['personal']) && !empty($result['personal']['relationship'])) {
-                                                $relationship = $result['personal']['relationship'];
-                                            }else{
-                                                 $relationship = "-";
-                                            }
-                                    }
-                                @endphp
-                                <div class="workbench-detail2">
-                                    {{$relationship}}
-                                </div>
-                            </a>
-                        </div>
-                        @php
-                            $job = '';
-                             $works_at = "-";
-                             $work_role = "-";
-                             $company_domain = "-";
-                             $business_description = "-";
-                            if (array_key_exists('personal', $result)) {
-                                    if (array_key_exists('works_at', $result['personal']) && !empty($result['personal']['works_at'])) {
-                                        $works_at = $result['personal']['works_at'];
-                                        $work_role = $result['personal']['work_role'];
-                                        $company_domain = $result['personal']['company_domain'];
-                                    }else{
-                                         $works_at = "-";
-                                        $work_role = "-";
-                                        $company_domain = "-";
-                                    }
-                            }
-                             if (array_key_exists('business', $result)) {
-                              if (array_key_exists('description', $result['business']) && !empty($result['business']['description'])) {
-                                $business_description =  $result['business']['description'];
-                              }else{ $business_description = "-";}
-                              if (array_key_exists('name', $result['business']) && !empty($result['business']['name'])) {
-                                if($works_at == "-") { $works_at =  $result['business']['name']; }
-                              }else{ $works_at = "-";}
-                             }
-                            $job = '<b>Works At:</b> '.$works_at.' <br/> <b>Job Role:</b> '.$work_role.' <br/> <b>Company Domain:</b>'.$company_domain.'<br/> <b>Company Description:</b> '.$business_description;
-
-                        @endphp
-                        <div class="email-list-item">
-                            <a href="#" class="email-list-item-inner">
-                                <div class="workbench-title">
-                                    Works At
+                                    <i class="mdi mdi-human-male-female"></i> Relationship
                                 </div>
                                 <div class="workbench-detail2">
-                                    {!! $works_at !!}
-                                </div>
-                            </a>
-                        </div>
-                        <div class="email-list-item">
-                            <a href="#" class="email-list-item-inner">
-                                <div class="workbench-title">
-                                    Work Role
-                                </div>
-                                <div class="workbench-detail2">
-                                    {!! $work_role !!}
-                                </div>
-                            </a>
-                        </div>
-                        <div class="email-list-item">
-                            <a href="#" class="email-list-item-inner">
-                                <div class="workbench-title">
-                                    Company Domain
-                                </div>
-                                <div class="workbench-detail2">
-                                    {!! $company_domain !!}
-                                </div>
-                            </a>
-                        </div>
-                        <div class="email-list-item">
-                            <a href="#" class="email-list-item-inner">
-                                <div class="workbench-title">
-                                    Company Description
-                                </div>
-                                <div class="workbench-detail2">
-                                    {!! $business_description !!}
+                                    {{$result['relationship']}}
                                 </div>
                             </a>
                         </div>
                     </div>
                 </div>
-                {{--<div class="email-attachments">--}}
-                    {{--<p>Jobs</p>--}}
-
-
-                {{--</div>--}}
+                <!-- Career -->
+                <div class="grid">
+                    <div class="email-aside-list">
+                        @if($result['work_at'] != "")
+                            <div class="email-list-item">
+                                <div class="email-list-item-inner">
+                                    <div class="workbench-title">
+                                        <i class="mdi mdi-worker"></i>  Work
+                                    </div>
+                                    <div class="workbench-detail2">
+                                        @if($result['work_at'] != "")
+                                            Company: {!! $result['work_at'] !!}
+                                            @if($result['work_description'] != "")
+                                                &nbsp; <br/>({!! $result['work_description'] !!})<br/>
+                                            @endif
+                                            @if($result['foundedYear'] != "")
+                                                &nbsp; <br/>Founded In: {!! $result['foundedYear'] !!}<br/>
+                                            @endif
+                                        @endif
+                                        @if($result['work_domain'] != "")
+                                                <br/>Domain: {!! $result['work_domain'] !!}<br/>
+                                        @endif
+                                        @if($result['work_title'] != "")
+                                                <br/> Title: {!! $result['work_title'] !!}<br/>
+                                        @endif
+                                        @if($result['work_role'] != "")
+                                                <br/> Role: {!! $result['work_role'] !!}<br/>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <!-- Images -->
-    <div class="row" style="display: none">
+    @if($result['images'] != [])
+    <div class="row">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -347,12 +281,19 @@
                 <div class="grid-body">
                     <div class="item-wrapper">
                         <div class="row">
+                            @foreach($result['images'] as $img)
+                                @php
+//                                    $result = file_get_contents($img);
+//                                    dd($result);
+                                @endphp
                             <div class="col-lg-3 col-md-4 col-6">
-                                <a href="#" class="d-block mb-4 h-100">
+                                <a href="{{$img}}" class="d-block mb-4 h-100">
                                     <img class="img-fluid img-thumbnail"
-                                        src="https://source.unsplash.com/pWkk7iiCoDM/400x300" alt="">
+                                        src="{{$img}}" alt="">
                                 </a>
                             </div>
+                            @endforeach
+                            <!--
                             <div class="col-lg-3 col-md-4 col-6">
                                 <a href="#" class="d-block mb-4 h-100">
                                     <img class="img-fluid img-thumbnail"
@@ -371,14 +312,24 @@
                                         src="https://source.unsplash.com/M185_qYH8vg/400x300" alt="">
                                 </a>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
     <!-- Social -->
-    <div class="row" style="display: none">
+    @if($result['social'] != [])
+        @php
+            $github = $result['github'];
+            $twitter = $result['twitter'];
+            $facebook = $result['facebook'];
+            $linkedin = $result['linkedin'];
+            $crunchbase = $result['crunchbase'];
+        @endphp
+        <div class="row">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -387,6 +338,7 @@
                 <div class="grid-body">
                     <div class="item-wrapper">
                         <div class="email-aside-list">
+                            @if(array_key_exists('handle',$linkedin) && $linkedin['handle'] != [])
                             <div class="email-list-item">
                                 <div class="email-list-item-inner">
                                     <div class="workbench-social-head">
@@ -399,6 +351,8 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
+                            @if(array_key_exists('handle',$facebook) && $facebook['handle'] != [])
                             <div class="email-list-item">
                                 <div class="email-list-item-inner">
                                     <div class="workbench-social-head">
@@ -410,39 +364,62 @@
                                         </a>
                                     </div>
                                 </div>
-                            </div>
+                            </div>x
+                            @endif
+                            @if(array_key_exists('handle',$twitter) && $twitter['handle'] != [])
                             <div class="email-list-item">
                                 <div class="email-list-item-inner">
                                     <div class="workbench-social-head">
-                                        <i class="mdi mdi-instagram"></i> &nbsp Instagram
+                                        <i class="mdi mdi-twitter"></i> &nbsp Twitter
                                     </div>
                                     <div class="workbench-social-detail">
-                                        <a href="https://www.linkedin.com/in/john-pagliaro-47b75258/" target="_blank">
-                                            https://www.linkedin.com/in/john-pagliaro-47b75258/
+                                        @foreach($twitter['handle'] as $twitter_handle)
+                                        <a href="https://twitter.com/{{$twitter_handle}}" target="_blank">
+                                            https://twitter.com/{{$twitter_handle}}
                                         </a>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
-                            <div class="email-list-item">
-                                <div class="email-list-item-inner">
-                                    <div class="workbench-social-head">
-                                        <i class="mdi mdi-google"></i> &nbsp Google
+                            @endif
+                            @if(array_key_exists('handle',$github) && $github['handle'] != [])
+                                    <div class="email-list-item">
+                                        <div class="email-list-item-inner">
+                                            <div class="workbench-social-head">
+                                                <i class="mdi mdi-google"></i> &nbsp Google
+                                            </div>
+                                            <div class="workbench-social-detail">
+                                                <a href="https://www.linkedin.com/in/john-pagliaro-47b75258/" target="_blank">
+                                                    https://www.linkedin.com/in/john-pagliaro-47b75258/
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="workbench-social-detail">
-                                        <a href="https://www.linkedin.com/in/john-pagliaro-47b75258/" target="_blank">
-                                            https://www.linkedin.com/in/john-pagliaro-47b75258/
-                                        </a>
+                                @endif
+                            @if(array_key_exists('handle',$crunchbase) && $crunchbase['handle'] != [])
+                                    <div class="email-list-item">
+                                        <div class="email-list-item-inner">
+                                            <div class="workbench-social-head">
+                                                <i class="mdi mdi-google"></i> &nbsp Crunchbase
+                                            </div>
+                                            <div class="workbench-social-detail">
+                                                <a href="https://www.linkedin.com/in/john-pagliaro-47b75258/" target="_blank">
+                                                    https://www.linkedin.com/in/john-pagliaro-47b75258/
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
     <!-- Related Websites -->
-    <div class="row" style="display: none">
+    @if($result['urls'] != [])
+    <div class="row">
         <div class="col-lg-12 equel-grid">
             <div class="grid">
                 <div class="grid-header">
@@ -451,25 +428,28 @@
                 <div class="grid-body">
                     <div class="item-wrapper">
                         <div class="email-aside-list">
+                            @foreach($result['urls'] as $item)
                             <div class="email-list-item">
                                 <div class="email-list-item-inner">
                                     <img class="workbech_site_img" src="http://www.placehold.it/50x50"
                                         alt="profile image">
                                     <p class="workbech_site_name">Link</p>
-                                    <p class="workbech_site_name">Title</p>
-                                    <p class="workbech_site_name">Preview</p>
+                                    {{--<p class="workbech_site_name">Title</p>--}}
+                                    {{--<p class="workbech_site_name">Preview</p>--}}
                                     <div class="workbench-social-detail">
-                                        <a href="https://www.linkedin.com/in/john-pagliaro-47b75258/" target="_blank">
-                                            https://www.linkedin.com/in/john-pagliaro-47b75258/ </a>
+                                        <a href="{{$item}}" target="_blank">
+                                            {{$item}} </a>
                                     </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @endif
     <!-- Web Results -->
     <div class="row" style="display: none">
         <div class="col-lg-12 equel-grid">

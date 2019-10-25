@@ -190,17 +190,19 @@
                                                                 <!-- {{--Birth Date--}} -->
                                                                     <div class="row">
                                                                         <div class="col-md-2">
-                                                                            <label> <i class="mdi mdi-cake"></i> Birth Date: </label>
+                                                                            <label> <i class="mdi mdi-cake"></i> Age: </label>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
                                                                                 <div class="demo-wrapper">
-                                                                                    <div id="datepicker-popup" class="input-group date datepicker">
+                                                                                    <div id="datepicker-popup" class="input-group date datepicker" style="display: none;">
                                                                                         {!! Form::text('birth_date', old("birth_date"),['placeholder' => 'Date of Birth','class' => 'form-control form-control-sm', 'id'=>'datetimepicker4']) !!}
                                                                                         <span class="input-group-addon input-group-append">
                                                                                             <span class="mdi mdi-calendar input-group-text"></span>
                                                                                         </span>
                                                                                     </div>
+                                                                                    {!! Form::number('age', old("age"),['placeholder' => 'Age','class' => 'form-control form-control-sm']) !!}
+
                                                                                 </div>
                                                                                 </div>
                                                                         </div>
@@ -224,20 +226,25 @@
                                                                 <!-- {{--Social--}} -->
                                                                     <div class="row">
                                                                         <div class="col-md-2">
-                                                                            <label> <i class="fa fa-globe"></i> Social
-                                                                                Media Links: </label>
+                                                                            <label> <i class="fa fa-globe"></i> Username: </label>
                                                                         </div>
                                                                         <div class="col-md-3">
                                                                             <div class="form-group">
-                                                                                {!! Form::text('social[username][]', old("username"),['placeholder' => 'Username','class' => 'form-control form-control-sm']) !!}
+                                                                                {!! Form::text('username', old("username"),['placeholder' => 'Username','class' => 'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-3">
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-2">
+                                                                            <label> <i class="fa fa-globe"></i> Social
+                                                                                Media Links: </label>
+                                                                        </div>
+                                                                        <div class="col-md-4">
                                                                             <div class="form-group">
                                                                                 {!! Form::text('social[url][]', old("social_url"),['placeholder' => 'Site Link','class' => 'form-control form-control-sm']) !!}
                                                                             </div>
                                                                         </div>
-                                                                        <div class="col-md-3">
+                                                                        <div class="col-md-4">
                                                                             <div class="form-group">
                                                                                 {!! Form::select('social[site][]', $social, old("site"),['class' => 'form-control form-control-sm']) !!}
                                                                             </div>
@@ -953,17 +960,12 @@
 			$('.add_social_button').click(function (e) {
 				$('.social_addmore').append('<div class="row">' +
 					'<div class="col-md-2">&nbsp;</div>' +
-					'<div class="col-md-3">' +
-                        '<div class="form-group">' +
-                            '{!! Form::text('social[username][]', old("username"), ['placeholder ' => 'Username ','class ' => 'form-control form-control-sm']) !!}' +
-                        '</div>' +
-					'</div>' +
-					'<div class="col-md-3">' +
+					'<div class="col-md-4">' +
                         '<div class="form-group">' +
                             '{!! Form::text('social[url][]', old("social_url"), ['placeholder ' => 'Site Link ','class ' => 'form-control form-control-sm']) !!}' +
                         '</div>' +
 					'</div>' +
-					'<div class="col-md-3">' +
+					'<div class="col-md-4">' +
                         '<div class="form-group">' +
                             '{!! Form::select('social[site][]', $social, old("site"), ['class ' => 'form-control form-control-sm']) !!}' +
                         '</div>' +

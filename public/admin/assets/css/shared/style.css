@@ -17232,11 +17232,11 @@ table.info-table tr th.actions {
 
 /* Result Image*/
 .workbench-img {
-    width: 200px;
-    height: 150px;
+    width: 163px;
+    height: 154px;
     overflow: hidden;
     border-radius: 100%;
-    margin: 10px 37px;
+    margin: 10px 61px;
 }
 
 
@@ -18518,6 +18518,7 @@ table.info-table tr th.actions {
 .email-preview-wrapper .preview-header .date {
     grid-column-start: 3;
     grid-row-start: 1;
+    grid-row-end: 3;
     text-align: right;
     color: #adb5bd;
     font-family: "Roboto", sans-serif;

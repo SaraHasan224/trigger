@@ -19,6 +19,8 @@ class CreateWorkbenchResultsTable extends Migration
             $table->integer('source_options_id')->unsigned()->index('workbench_source_options_id_foreign');
             $table->float('score');
             $table->json('response');
+            $table->json('result');
+            $table->integer('type');
             $table->timestamps();
         });
     }
